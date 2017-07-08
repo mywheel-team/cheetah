@@ -6,4 +6,6 @@ package com.wthfeng.cheetah.processor;
  * @date 2017/7/3 09:18
  */
 public interface PageProcessor {
+
+
 }
