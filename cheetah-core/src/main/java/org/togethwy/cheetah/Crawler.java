@@ -42,6 +42,7 @@ public class Crawler implements Runnable{
     public Crawler(PageProcessor pageProcessor) {
         this.pageProcessor = pageProcessor;
         this.config = pageProcessor.getConfig();
+        this.waitRequests.add(new Request(config.getStartUrl()));
     }
 
     public static Crawler create(PageProcessor pageProcessor){

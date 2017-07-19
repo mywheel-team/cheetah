@@ -2,6 +2,7 @@ package org.togethwy.cheetah;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.Condition;
 
 /**
  * 爬虫配置类
@@ -10,6 +11,12 @@ import java.util.Map;
  * @date 2017/7/8 16:55
  */
 public class Config {
+
+
+    public static Config create(){
+        return new Config();
+
+    }
 
     /**
      * 域名

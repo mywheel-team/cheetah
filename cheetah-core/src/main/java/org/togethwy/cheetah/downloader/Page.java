@@ -22,7 +22,7 @@ public class Page {
 
     private int statusCode;
 
-    private Result result;
+    private Result result = new Result();
 
     private Set<Request> waitRequests = new HashSet<>();
 
@@ -74,16 +74,14 @@ public class Page {
         }
     }
 
-
-
     public Result getResult() {
         return result;
-
     }
 
-    public void setResult(Result result) {
-        this.result = result;
+    public void setResult(String key,Object value){
+        this.result.put(key,value);
     }
+
 
     public String getRawHtml() {
         return rawHtml;
