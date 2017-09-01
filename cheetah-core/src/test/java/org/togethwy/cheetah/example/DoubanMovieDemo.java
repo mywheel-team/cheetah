@@ -21,14 +21,14 @@ public class DoubanMovieDemo implements PageProcessor{
     @Override
     public void process(Page page) {
 
-        List<String> tabs = page.getHtml().$(".article table.tagCol").get(0).getLinks();
-        page.addWaitRequest(tabs);
+//        List<String> tabs = page.getHtml().$(".article table.tagCol").get(0).getLinks();
+//        page.addWaitRequest(tabs);
 
-        List<String> subjects = page.getHtml().$("#wrapper #content .article .item .pl2").getLinks();
+        List<String> subjects = page.getHtml().$(".article #app .list-wp").getLinks();
         page.addWaitRequest(subjects);
 
-        List<String> next = page.getHtml().$(".paginator").getLinks();
-        page.addWaitRequest(next);
+//        List<String> next = page.getHtml().$(".paginator").getLinks();
+//        page.addWaitRequest(next);
 
         String name = page.getHtml().$("#content h1 span[property=v:itemreviewed]").getValue();
 
@@ -65,7 +65,7 @@ public class DoubanMovieDemo implements PageProcessor{
     @Override
     public Config getConfig() {
         this.config.setDomain("https://movie.douban.com")
-                .setStartUrl("https://movie.douban.com/tag")
+                .setStartUrl("https://movie.douban.com/tag?sort=T&tags=%E5%89%A7%E6%83%85")
                 .setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36")
                 .addCookie("bid","PI0P2w4aMDI")
                 .addHeader("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")

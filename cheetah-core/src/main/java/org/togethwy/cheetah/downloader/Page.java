@@ -30,7 +30,8 @@ public class Page {
         if(this.rawHtml==null){
             return null;
         }
-        return new Html(rawHtml);
+        this.html =  new Html(rawHtml);
+        return this.html;
     }
 
     public void setHtml(Html html) {
