@@ -4,9 +4,10 @@
 
   <groupId>org.togethwy</groupId>
   <artifactId>cheetah</artifactId>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.0.1</version>
   <modules>
     <module>cheetah-core</module>
+    <module>cheetah-elastic</module>
   </modules>
   <packaging>pom</packaging>
 
