@@ -25,7 +25,6 @@ public class HttpDownloader implements Downloader {
 
     /**
      * 下载文件简易实现
-     * //TODO 添加cookie及header、代理
      * @param request 页面请求
      * @param config 下载全局配置及信息
      * @return
@@ -35,7 +34,7 @@ public class HttpDownloader implements Downloader {
         String url = request.getUrl();
         logger.debug("download url is :{}", url);
         CloseableHttpResponse response = null;
-        CloseableHttpClient httpClient = HttpClients.createDefault();
+        CloseableHttpClient httpClient = HttpClientHelper.getDefaultClient(config);
         HttpGet httpGet = new HttpGet(url);
         Page page = new Page();
         try {
