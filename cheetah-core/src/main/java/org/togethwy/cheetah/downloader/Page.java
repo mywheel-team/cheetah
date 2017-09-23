@@ -4,23 +4,26 @@ import org.togethwy.cheetah.selector.Html;
 import org.togethwy.cheetah.util.StringUtils;
 import org.togethwy.cheetah.util.UrlUtils;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 /**
  * 下载的html页面格式的结果类
+ *
  * @author wangtonghe
  * @date 2017/7/8 16:14
  */
-public class Page extends DownloadResult{
+public class Page extends DownloadResult {
 
 
     private Html html;
 
     public Html getHtml() {
-        if(getRawText()==null){
+        if (getRawText() == null) {
             return null;
         }
-        this.html =  new Html(getRawText());
+        this.html = new Html(getRawText());
         return this.html;
     }
 
@@ -40,7 +43,7 @@ public class Page extends DownloadResult{
 
 
     @Override
-    public void addWaitRequest(String... requests){
+    public void addWaitRequest(List<String> requests) {
         //TODO: synchronized  同步锁
         for (String s : requests) {
             if (StringUtils.isEmpty(s) || s.equals("#") || s.startsWith("javascript:")) {
@@ -50,5 +53,7 @@ public class Page extends DownloadResult{
             this.waitRequests.add(new Request(s));
         }
     }
+
+
 
 }

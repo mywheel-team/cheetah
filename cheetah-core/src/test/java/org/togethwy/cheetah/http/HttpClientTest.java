@@ -36,7 +36,7 @@ public class HttpClientTest {
 
     @Test
     public void useBuilder()throws IOException{
-        String url = "http://localhost:3000/test";
+        String url = "http://www.baidu.com";
         RequestConfig requestConfig = RequestConfig.custom().setConnectionRequestTimeout(1000)
                 .setConnectTimeout(2000).setSocketTimeout(10000)
                 .build();

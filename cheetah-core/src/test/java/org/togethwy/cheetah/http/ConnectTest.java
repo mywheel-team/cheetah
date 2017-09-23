@@ -22,7 +22,7 @@ public class ConnectTest {
         connection.setRequestMethod("GET");  //设置请求方法
 
         /**
-         * 建立连接并获取资源（指向百度首页的html内容）
+         * 建立连接并获取资源
          */
         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         StringBuilder sb = new StringBuilder();

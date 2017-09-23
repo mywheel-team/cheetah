@@ -57,9 +57,16 @@ public abstract class DownloadResult {
     /**
      * 将获取到的待爬url加入到待爬列表，留给子类实现
      *
-     * @param requests
+     * @param request
      */
-    public abstract void addWaitRequest(String ... requests);
+    public void addWaitRequest(String request) {
+        List<String> requests = new ArrayList<>();
+        requests.add(request);
+        addWaitRequest(requests);
+    }
+
+
+    public abstract void addWaitRequest(List<String> requests);
 
     public Set<Request> getWaitRequests() {
         return waitRequests;

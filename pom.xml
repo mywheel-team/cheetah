@@ -8,6 +8,7 @@
   <modules>
     <module>cheetah-core</module>
     <module>cheetah-elastic</module>
+      <module>cheeaah-sample</module>
   </modules>
   <packaging>pom</packaging>
 

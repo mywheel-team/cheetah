@@ -80,7 +80,7 @@ public class JsonDataResult extends DownloadResult {
 
 
     @Override
-    public void addWaitRequest(String ... requests) {
+    public void addWaitRequest(List<String> requests) {
         for (String s : requests) {
             if (StringUtils.isEmpty(s) || s.equals("#") || s.startsWith("javascript:")) {
                 break;
