@@ -2,6 +2,7 @@ package org.togethwy.cheetah.handler;
 
 import org.togethwy.cheetah.Result;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -10,11 +11,14 @@ import java.util.Map;
  */
 public class ConsoleHandler implements Handler {
     @Override
-    public void handle(Result result) {
+    public void handle(List<Result> results) {
 
-       for(Map.Entry<String,Object> entry:result.getResult().entrySet() ){
-           System.out.println(entry.getKey()+":\t"+entry.getValue());
-       }
+        results.forEach(result->{
+            for(Map.Entry<String,Object> entry:result.getResult().entrySet() ){
+                System.out.println(entry.getKey()+":\t"+entry.getValue());
+            }
+        });
+
     }
 
     @Override

@@ -2,7 +2,6 @@ package org.togethwy.cheetah;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.locks.Condition;
 
 /**
  * 爬虫配置类
@@ -10,12 +9,11 @@ import java.util.concurrent.locks.Condition;
  * @author wangtonghe
  * @date 2017/7/8 16:55
  */
-public class Config {
+public class SiteConfig {
 
 
-    public static Config create(){
-        return new Config();
-
+    public static SiteConfig create(){
+        return new SiteConfig();
     }
 
     /**
@@ -58,21 +56,60 @@ public class Config {
      */
     private int threadNum;
 
+
+    /**
+     * json格式API请求地址
+     */
+    private String jsonAPIUrl;
+
+    /**
+     * 只使用API请求
+     */
+    private boolean onlyAPI;
+
+    private boolean isStartJSONAPI;
+
+    public boolean isStartJSONAPI() {
+        return isStartJSONAPI;
+    }
+
+    public SiteConfig setStartJSONAPI(boolean startJSONAPI) {
+        isStartJSONAPI = startJSONAPI;
+        return this;
+    }
+
+    public boolean isOnlyAPI() {
+        return onlyAPI;
+    }
+
+    public SiteConfig setOnlyAPI(boolean onlyAPI) {
+        this.onlyAPI = onlyAPI;
+        return this;
+    }
+
     public Map<String, String> getHeaders() {
         return headers;
     }
 
-    public Config setHeaders(Map<String, String> headers) {
+    public SiteConfig setHeaders(Map<String, String> headers) {
         this.headers = headers;
         return this;
     }
 
+    public String getJsonAPIUrl() {
+        return jsonAPIUrl;
+    }
+
+    public SiteConfig setJsonAPIUrl(String jsonAPIUrl) {
+        this.jsonAPIUrl = jsonAPIUrl;
+        return this;
+    }
 
     public String getStartUrl() {
         return startUrl;
     }
 
-    public Config setStartUrl(String startUrl) {
+    public SiteConfig setStartUrl(String startUrl) {
         this.startUrl = startUrl;
         return this;
     }
@@ -81,17 +118,17 @@ public class Config {
         return cookies;
     }
 
-    public Config setCookies(Map<String,String> cookies) {
+    public SiteConfig setCookies(Map<String,String> cookies) {
         this.cookies = cookies;
         return this;
     }
 
-    public Config addCookie(String key,String value){
+    public SiteConfig addCookie(String key, String value){
         this.cookies.put(key,value);
         return this;
     }
 
-    public Config addHeader(String key ,String value){
+    public SiteConfig addHeader(String key , String value){
         this.headers.put(key,value);
         return this;
     }
@@ -100,7 +137,7 @@ public class Config {
         return domain;
     }
 
-    public Config setDomain(String domain) {
+    public SiteConfig setDomain(String domain) {
         this.domain = domain;
         return this;
     }
@@ -109,7 +146,7 @@ public class Config {
         return userAgent;
     }
 
-    public Config setUserAgent(String userAgent) {
+    public SiteConfig setUserAgent(String userAgent) {
         this.userAgent = userAgent;
         return this;
     }
@@ -118,7 +155,7 @@ public class Config {
         return charset;
     }
 
-    public Config setCharset(String charset) {
+    public SiteConfig setCharset(String charset) {
         this.charset = charset;
         return this;
     }
@@ -127,7 +164,7 @@ public class Config {
         return threadSleep;
     }
 
-    public Config setThreadSleep(int threadSleep) {
+    public SiteConfig setThreadSleep(int threadSleep) {
         this.threadSleep = threadSleep;
         return this;
     }
@@ -136,7 +173,7 @@ public class Config {
         return threadNum;
     }
 
-    public Config setThreadNum(int threadNum) {
+    public SiteConfig setThreadNum(int threadNum) {
         this.threadNum = threadNum;
         return this;
     }

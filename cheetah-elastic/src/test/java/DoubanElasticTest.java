@@ -1,15 +1,14 @@
 
 
-import org.togethwy.cheetah.Config;
-import org.togethwy.cheetah.Crawler;
+import org.togethwy.cheetah.SiteConfig;
+import org.togethwy.cheetah.Cheetah;
 import org.togethwy.cheetah.downloader.Page;
 import org.togethwy.cheetah.handler.ConsoleHandler;
 import org.togethwy.cheetah.processor.PageProcessor;
 import org.togethwy.cheetah.selector.Html;
-import org.togethwy.cheetah.util.StringUtil;
+import org.togethwy.cheetah.util.StringUtils;
 import org.togethwy.handler.ElasticHandler;
 
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -20,7 +19,7 @@ import java.util.List;
  */
 public class DoubanElasticTest implements PageProcessor {
 
-    private Config setting;
+    private SiteConfig setting;
 
     @Override
     public void process(Page page) {
@@ -53,7 +52,7 @@ public class DoubanElasticTest implements PageProcessor {
         Double mark =null;
 
 
-        if(!StringUtil.isEmpty(markText)){
+        if(!StringUtils.isEmpty(markText)){
             mark = Double.parseDouble(markText);
         }
         Date dateTime = null;
@@ -79,8 +78,8 @@ public class DoubanElasticTest implements PageProcessor {
     }
 
     @Override
-    public Config getConfig() {
-        setting=Config.create().setStartUrl("https://movie.douban.com/tag");
+    public SiteConfig getSiteConfig() {
+        setting= SiteConfig.create().setStartUrl("https://movie.douban.com/tag");
         setting.setDomain("https://movie.douban.com");
         setting.setThreadSleep(2000);
         setting.setThreadNum(3);
@@ -90,7 +89,7 @@ public class DoubanElasticTest implements PageProcessor {
 
 
     public static void main(String[] args) {
-        Crawler.create(new DoubanElasticTest())
+        Cheetah.create(new DoubanElasticTest())
                 .setHandler(new ElasticHandler("bee4","movie"))
                 .setHandler(new ConsoleHandler())
                 .run();

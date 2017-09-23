@@ -39,5 +39,13 @@
             <artifactId>jsoup</artifactId>
             <version>1.10.1</version>
         </dependency>
+
+
+        <!--解析json包，fastjson-->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.28</version>
+        </dependency>
     </dependencies>
 </project>

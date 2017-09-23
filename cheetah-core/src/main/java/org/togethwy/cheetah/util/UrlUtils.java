@@ -1,5 +1,11 @@
 package org.togethwy.cheetah.util;
 
+import org.togethwy.cheetah.downloader.Request;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 /**
  * @author wangtonghe
  * @date 2017/7/8 21:06
@@ -24,5 +30,18 @@ public class UrlUtils {
         }
         return refer+url;
 
+    }
+
+
+    public static Set<Request> Str2Request(List<String> reqUrls,String domain){
+        Set<Request> requests = new HashSet<>();
+        for (String s : reqUrls) {
+            if (StringUtils.isEmpty(s) || s.equals("#") || s.startsWith("javascript:")) {
+                break;
+            }
+            s = UrlUtils.canonicalizeUrl(s, domain);
+            requests.add(new Request(s));
+        }
+        return requests;
     }
 }

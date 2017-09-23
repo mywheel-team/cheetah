@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Date;
 
 /**
  * @author wangtonghe
@@ -16,14 +17,13 @@ public class ConnectTest {
 
     @Test
     public void test() throws IOException{
-        URL url = new URL("http://www.baidu.com");
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-        connection.setRequestMethod("GET");
-        connection.connect();
-        if(connection.getResponseCode()!=200){
-            System.out.println("链接失败");
+        URL url = new URL("http://www.baidu.com");  //构建一个URL资源对象
+        HttpURLConnection connection = (HttpURLConnection) url.openConnection();//建立与指向资源的连接
+        connection.setRequestMethod("GET");  //设置请求方法
 
-        }
+        /**
+         * 建立连接并获取资源（指向百度首页的html内容）
+         */
         BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
         StringBuilder sb = new StringBuilder();
         String line ;
@@ -32,4 +32,24 @@ public class ConnectTest {
         }
         System.out.println(sb.toString());
     }
+
+    @Test
+    public void test2()throws IOException{
+        URL url = new URL("http://www.baidu.com");
+        HttpURLConnection urlConnection =(HttpURLConnection) url.openConnection();
+        urlConnection.connect();
+        String type = urlConnection.getContentType();
+        String encoding = urlConnection.getContentEncoding();
+        int length = urlConnection.getContentLength();
+        long date = urlConnection.getDate();
+
+        long expiration = urlConnection.getExpiration();
+        long modified = urlConnection.getLastModified();
+        System.out.println("length:"+length);
+        System.out.println("encoding:"+encoding);
+        System.out.println("date:"+new Date(date));
+        System.out.println("modified:"+new Date(modified));
+    }
+
+
 }

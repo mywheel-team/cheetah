@@ -6,7 +6,7 @@ import java.util.Random;
  * @author wangtonghe
  * @date 2017/5/15 21:51
  */
-public final class StringUtil {
+public final class StringUtils {
 
     public static  String getRandomStr(int num){
         String base = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

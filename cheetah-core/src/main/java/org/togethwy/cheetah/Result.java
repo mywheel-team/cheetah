@@ -15,9 +15,14 @@ public class Result {
         fileResult.addAll(fileUrls);
     }
 
+    public void setResult(Map<String, Object> result) {
+        this.result = result;
+    }
+
     public <T>void put(String key, T value) {
         if (value != null) {
             result.put(key, value);
+
         }
     }
 
@@ -37,7 +42,7 @@ public class Result {
 
     @Override
     public String toString() {
-        final StringBuffer sb = new StringBuffer("BeeResult{");
+        final StringBuffer sb = new StringBuffer("Result{");
         sb.append("result=").append(result);
         sb.append('}');
         return sb.toString();

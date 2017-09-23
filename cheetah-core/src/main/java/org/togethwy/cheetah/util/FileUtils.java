@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
  * @author wangtonghe
  * @date 2017/5/5 09:35
  */
-public final class FileUtil {
+public final class FileUtils {
 
     /**
      * 默认下载线程数
@@ -34,7 +34,7 @@ public final class FileUtil {
 
 
         String fileName = originUrl.substring(originUrl.lastIndexOf("/") + 1);
-        if (StringUtil.isEmpty(fileName)) {
+        if (StringUtils.isEmpty(fileName)) {
             return;
         }
         try {
@@ -84,7 +84,7 @@ public final class FileUtil {
         threadNum = threadNum > 0 ? threadNum : DEFAULT_DOWNLOAD_THREAD_NUM;
         ExecutorService executorService = Executors.newFixedThreadPool(threadNum);
         fileUrls.forEach((url -> {
-            executorService.execute(() -> FileUtil.download(url, path));
+            executorService.execute(() -> FileUtils.download(url, path));
         }));
         //TODO 等爬虫线程停止后再停止，或至少等待一段时间再停止
         executorService.shutdown();

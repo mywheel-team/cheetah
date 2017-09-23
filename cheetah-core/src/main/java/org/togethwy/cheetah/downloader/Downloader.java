@@ -1,6 +1,6 @@
 package org.togethwy.cheetah.downloader;
 
-import org.togethwy.cheetah.Config;
+import org.togethwy.cheetah.SiteConfig;
 
 /**
  * @author wangtonghe
@@ -10,9 +10,10 @@ public interface Downloader {
 
     /**
      * 下载页面
-     * @param request 页面请求
-     * @param config 下载全局配置及信息
+     *
+     * @param request    页面请求
+     * @param siteConfig 下载全局配置及信息
      * @return
      */
-    Page download(Request request,Config config);
+    DownloadResult download(Request request, SiteConfig siteConfig);
 }

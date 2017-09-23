@@ -1,11 +1,10 @@
 package org.togethwy.cheetah.downloader;
 
 
-import org.togethwy.cheetah.Config;
+import org.togethwy.cheetah.SiteConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,22 +25,22 @@ public class HttpDownloader implements Downloader {
     /**
      * 下载文件简易实现
      * @param request 页面请求
-     * @param config 下载全局配置及信息
+     * @param siteConfig 下载全局配置及信息
      * @return
      */
     @Override
-    public Page download(Request request, Config config) {
+    public DownloadResult download(Request request, SiteConfig siteConfig) {
         String url = request.getUrl();
         logger.debug("download url is :{}", url);
         CloseableHttpResponse response = null;
-        CloseableHttpClient httpClient = HttpClientHelper.getDefaultClient(config);
+        CloseableHttpClient httpClient = HttpClientHelper.getDefaultClient(siteConfig);
         HttpGet httpGet = new HttpGet(url);
-        Page page = new Page();
+        DownloadResult downloadResult = new Page();
         try {
             response = httpClient.execute(httpGet);
-            page.setStatusCode(response.getStatusLine().getStatusCode());
-            page.setUrl(url);
-            page.setRawHtml(EntityUtils.toString(response.getEntity(), config.getCharset()));
+            downloadResult.setStatusCode(response.getStatusLine().getStatusCode());
+            downloadResult.setUrl(url);
+            downloadResult.setRawText(EntityUtils.toString(response.getEntity(), siteConfig.getCharset()));
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -49,6 +48,6 @@ public class HttpDownloader implements Downloader {
                 EntityUtils.consumeQuietly(response.getEntity());
             }
         }
-        return page;
+        return downloadResult;
     }
 }

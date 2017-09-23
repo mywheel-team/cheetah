@@ -1,34 +1,30 @@
 package org.togethwy.cheetah.example;
 
-import org.togethwy.cheetah.Config;
-import org.togethwy.cheetah.Crawler;
+import org.togethwy.cheetah.SiteConfig;
+import org.togethwy.cheetah.Cheetah;
+import org.togethwy.cheetah.downloader.DownloadResult;
+import org.togethwy.cheetah.downloader.JsonDataResult;
 import org.togethwy.cheetah.downloader.Page;
 import org.togethwy.cheetah.handler.ConsoleHandler;
+import org.togethwy.cheetah.downloader.JsonDownloader;
+import org.togethwy.cheetah.processor.JsonProcessor;
 import org.togethwy.cheetah.processor.PageProcessor;
 import org.togethwy.cheetah.selector.Html;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * 豆瓣电影爬虫demo
+ *
  * @author wangtonghe
  * @date 2017/7/8 16:44
  */
-public class DoubanMovieDemo implements PageProcessor{
+public class DoubanMovieDemo implements PageProcessor {
 
-    private Config config = Config.create();
+    private SiteConfig siteConfig = SiteConfig.create();
 
     @Override
     public void process(Page page) {
-
-//        List<String> tabs = page.getHtml().$(".article table.tagCol").get(0).getLinks();
-//        page.addWaitRequest(tabs);
-
-        List<String> subjects = page.getHtml().$(".article #app .list-wp").getLinks();
-        page.addWaitRequest(subjects);
-
-//        List<String> next = page.getHtml().$(".paginator").getLinks();
-//        page.addWaitRequest(next);
 
         String name = page.getHtml().$("#content h1 span[property=v:itemreviewed]").getValue();
 
@@ -47,36 +43,63 @@ public class DoubanMovieDemo implements PageProcessor{
 
         String mark = page.getHtml().$("#interest_sectl .rating_num").getValue();
 
-        page.setResult("name", name);
-        page.setResult("author", author);
-        page.setResult("actor", actor_list);
-        page.setResult("lang", lang);
-        page.setResult("country", country);
-        page.setResult("category", category_list);
+        Map<String, Object> result = new HashMap<>();
+
+        result.put("name", name);
+        result.put("author", author);
+        result.put("actor", actor_list);
+        result.put("lang", lang);
+        result.put("country", country);
+        result.put("category", category_list);
         if (date != null && date.indexOf("(") > 0) {
             date = date.substring(0, date.indexOf("("));
         }
-        page.setResult("date", date);
-        page.setResult("mark", mark);
+        result.put("date", date);
+        result.put("mark", mark);
+
+        page.addResult(result);
 
 
     }
 
     @Override
-    public Config getConfig() {
-        this.config.setDomain("https://movie.douban.com")
-                .setStartUrl("https://movie.douban.com/tag?sort=T&tags=%E5%89%A7%E6%83%85")
+    public SiteConfig setAndGetSiteConfig() {
+        this.siteConfig.setDomain("https://movie.douban.com")
+                .setStartUrl("https://movie.douban.com/subject/1292052")
                 .setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36")
-                .addCookie("bid","PI0P2w4aMDI")
-                .addHeader("Accept","text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
-                .addHeader("Accept-Encoding","gzip, deflate, sdch, br")
-                .addHeader("Accept-Language","zh-CN, zh; q=0.8, en; q=0.6")
+                .addCookie("bid", "PI0P2w4aMDI")
+                .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
+                .addHeader("Accept-Encoding", "gzip, deflate, sdch, br")
+                .addHeader("Accept-Language", "zh-CN, zh; q=0.8, en; q=0.6")
                 .setThreadSleep(2000)
-                .setThreadNum(3);
-        return config;
+                .setThreadNum(3)
+                .setJsonAPIUrl("https://movie.douban.com/j/new_search_subjects?sort=T&range=0,10&tags=&start=0")
+                .setStartJSONAPI(true)
+                .setOnlyAPI(true);
+        return siteConfig;
     }
 
+
+    @Override
+    public void processJSON(JsonDataResult jsonData) {
+        List<Map<String, Object>> listData = jsonData.parseListFromMap();
+
+        listData.forEach(eachMap -> {
+            String url = (String) eachMap.get("url");
+            jsonData.addWaitRequest(url);
+
+        });
+        String url = jsonData.getUrl();
+        String numStr = url.substring(url.lastIndexOf("start="));
+        int num = Integer.parseInt(numStr.substring(6));
+        String newUrl = url.replace(numStr, "start=" + (num + 10));
+        System.out.println(newUrl);
+        jsonData.setJsonUrl(newUrl);
+
+    }
+
+
     public static void main(String[] args) {
-        Crawler.create(new DoubanMovieDemo()).setHandler(new ConsoleHandler()).run();
+        Cheetah.create(new DoubanMovieDemo()).setHandler(new ConsoleHandler()).run();
     }
 }

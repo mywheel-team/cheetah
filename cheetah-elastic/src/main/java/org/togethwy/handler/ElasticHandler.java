@@ -5,6 +5,7 @@ import org.togethwy.cheetah.handler.Handler;
 import org.togethwy.elasticsearch.ESHelper;
 
 import java.net.UnknownHostException;
+import java.util.List;
 
 /**
  * @author wangtonghe
@@ -43,9 +44,12 @@ public class ElasticHandler implements Handler {
 
 
     @Override
-    public void handle(Result beeResult) {
+    public void handle(List<Result> results) {
+        results.forEach(result->{
+            esHelper.insert(index,type,result.getResult());
 
-        esHelper.insert(index,type,beeResult.getResult());
+        });
+
 
     }
 
