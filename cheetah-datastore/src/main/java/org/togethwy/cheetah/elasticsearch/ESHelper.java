@@ -1,4 +1,4 @@
-package org.togethwy.elasticsearch;
+package org.togethwy.cheetah.elasticsearch;
 
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
@@ -21,10 +21,7 @@ public final class ESHelper {
 
     public ESHelper(String clusterName, String host) throws UnknownHostException {
 
-        Settings settings = Settings.builder().put("cluster.name", clusterName)
-                .build();
-        this.client = new PreBuiltTransportClient(settings)
-                .addTransportAddress(new InetSocketTransportAddress(InetAddress.getByName(host), 9300));
+       new ESHelper(clusterName,host,9300);
     }
 
     public ESHelper(String clusterName, String host, int port) throws UnknownHostException {
@@ -45,6 +42,12 @@ public final class ESHelper {
       return   client.prepareIndex(index,type).setSource(param).get().status().name()
               .equals(ESRestStatus.CREATED.name());
 
+    }
+
+    public void close(){
+        if(client!=null){
+            client.close();
+        }
     }
 
 

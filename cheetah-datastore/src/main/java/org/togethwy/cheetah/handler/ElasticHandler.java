@@ -1,8 +1,9 @@
-package org.togethwy.handler;
+package org.togethwy.cheetah.handler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.togethwy.cheetah.Result;
-import org.togethwy.cheetah.handler.Handler;
-import org.togethwy.elasticsearch.ESHelper;
+import org.togethwy.cheetah.elasticsearch.ESHelper;
 
 import java.net.UnknownHostException;
 import java.util.List;
@@ -13,32 +14,25 @@ import java.util.List;
  */
 public class ElasticHandler implements Handler {
 
+    private static final Logger logger = LoggerFactory.getLogger(ElasticHandler.class);
+
+
 
     private String index;
-
 
     private String type;
 
     private ESHelper esHelper;
 
 
-    //TODO 从配置文件中获取 或传值？
-    private String clusterName = "elasticsearch";
-
-    private String host = "127.0.0.1";
-
-    private int port = 9300;
-
-
-
-    public ElasticHandler(String index,String type) {
+    public ElasticHandler(String host,int port,String cluster,String index,String type) {
 
         try {
-            this.esHelper = new ESHelper(clusterName,host,port);
+            this.esHelper = new ESHelper(cluster,host,port);
             this.index = index;
             this.type = type;
         } catch (UnknownHostException e) {
-            e.printStackTrace();
+           logger.error("create ElasticHandler error",e);
         }
     }
 
@@ -49,16 +43,13 @@ public class ElasticHandler implements Handler {
             esHelper.insert(index,type,result.getResult());
 
         });
-
-
     }
 
 
 
     @Override
     public void destory() {
-
-
+        esHelper.close();
     }
 
     @Override

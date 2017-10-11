@@ -7,7 +7,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>cheeaah-sample</artifactId>
+    <artifactId>cheetah-sample</artifactId>
     <packaging>jar</packaging>
 
     <name>cheetah-sample</name>
@@ -21,7 +21,7 @@
 
         <dependency>
             <groupId>org.togethwy</groupId>
-            <artifactId>cheetah-elastic</artifactId>
+            <artifactId>cheetah-datastore</artifactId>
             <version>0.0.1</version>
         </dependency>
 

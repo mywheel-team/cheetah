@@ -5,9 +5,10 @@ import org.togethwy.cheetah.SiteConfig;
 import org.togethwy.cheetah.downloader.JsonDataResult;
 import org.togethwy.cheetah.downloader.Page;
 import org.togethwy.cheetah.handler.ConsoleHandler;
+import org.togethwy.cheetah.handler.RedisHandler;
 import org.togethwy.cheetah.processor.PageProcessor;
 import org.togethwy.cheetah.selector.Html;
-import org.togethwy.handler.ElasticHandler;
+import org.togethwy.cheetah.handler.ElasticHandler;
 
 import java.util.*;
 
@@ -63,7 +64,7 @@ public class DoubanMovieDemo implements PageProcessor {
     @Override
     public SiteConfig setAndGetSiteConfig() {
         this.siteConfig.setDomain("https://movie.douban.com")
-                .setStartUrl("https://movie.douban.com/subject/1292052")
+                .setStartUrl("https://movie.douban.com")
                 .setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36")
                 .addCookie("bid", "PI0P2w4aMDI")
                 .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
@@ -100,7 +101,8 @@ public class DoubanMovieDemo implements PageProcessor {
 
     public static void main(String[] args) {
             Cheetah.create(new DoubanMovieDemo())
-                    .setHandler(new ElasticHandler("cheetah","movie"))
+//                    .setHandler(new ElasticHandler("localhost",9300,"elasticsearch","cheetah","movie"))
+                    .setHandler(new RedisHandler("localhost","movie"))
                     .setHandler(new ConsoleHandler())
                     .run();
     }

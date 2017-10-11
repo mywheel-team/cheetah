@@ -1,4 +1,4 @@
-package org.togethwy.elasticsearch;
+package org.togethwy.cheetah.elasticsearch;
 
 /**
  * @author wangtonghe
