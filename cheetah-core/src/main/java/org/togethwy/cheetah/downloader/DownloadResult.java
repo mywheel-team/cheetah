@@ -25,6 +25,13 @@ public abstract class DownloadResult {
         return resultList;
     }
 
+    public void setFileResult(List<String> fileUrls){
+        Result result = new Result();
+        result.setFileResult(fileUrls);
+        resultList.add(result);
+    }
+
+
     public void addResultList(List<Map<String, Object>> results) {
         results.forEach(eachMap -> {
             Result result = new Result();
