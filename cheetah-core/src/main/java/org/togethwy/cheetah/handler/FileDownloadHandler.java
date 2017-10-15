@@ -1,5 +1,6 @@
 package org.togethwy.cheetah.handler;
 
+import org.togethwy.cheetah.CheetahResult;
 import org.togethwy.cheetah.Result;
 import org.togethwy.cheetah.util.FileUtils;
 
@@ -8,12 +9,12 @@ import java.util.List;
 import java.util.Set;
 
 /**
- *
  * 文件下载处理器
+ *
  * @author wangtonghe
  * @date 2017/10/12 21:23
  */
-public class FileDownloadHandler implements Handler{
+public class FileDownloadHandler implements Handler {
     private String path;
 
     private static String HTTP_PREFIX = "http:";
@@ -27,16 +28,15 @@ public class FileDownloadHandler implements Handler{
 
     //TODO 文件下载处理添加cookie等
     @Override
-    public void handle(List<Result> results) {
+    public void handle(CheetahResult cheetahResult) {
+        List<String> lists = cheetahResult.getFileResults();
+        Set<String> newUrls = new HashSet<>();
+        lists.forEach(fileUrl -> {
+            newUrls.add(doOriginUrl(fileUrl, domain));
 
-        results.forEach((result -> {
-            Set<String> originUrls = result.getFileResults();
+        });
+        FileUtils.batchDownloadFile(newUrls, path);
 
-            Set<String> newUrls = new HashSet<>();
-            originUrls.forEach(url -> newUrls.add(doOriginUrl(url,domain)));
-
-            FileUtils.batchDownloadFile(newUrls, path);
-        }));
     }
 
     @Override
@@ -55,13 +55,13 @@ public class FileDownloadHandler implements Handler{
      * @param originUrl
      * @return
      */
-    private static String doOriginUrl(String originUrl,String domain) {
+    private static String doOriginUrl(String originUrl, String domain) {
         if (originUrl.startsWith("http")) {
             return originUrl;
         } else if (originUrl.startsWith("//")) {
             return HTTP_PREFIX + originUrl;
-        }else if(originUrl.startsWith("/")){
-            return domain+originUrl;
+        } else if (originUrl.startsWith("/")) {
+            return domain + originUrl;
         }
         return null;
 

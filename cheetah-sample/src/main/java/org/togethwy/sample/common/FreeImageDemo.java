@@ -1,19 +1,17 @@
 package org.togethwy.sample.common;
 
 import org.togethwy.cheetah.Cheetah;
+import org.togethwy.cheetah.CheetahResult;
 import org.togethwy.cheetah.SiteConfig;
 import org.togethwy.cheetah.downloader.Page;
 import org.togethwy.cheetah.handler.ConsoleHandler;
-import org.togethwy.cheetah.handler.ElasticHandler;
 import org.togethwy.cheetah.handler.FileDownloadHandler;
-import org.togethwy.cheetah.handler.RedisHandler;
 import org.togethwy.cheetah.processor.PageProcessor;
 
-import java.awt.print.Pageable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * 免费图片网站 http://cn.freeimages.com 爬虫demo
  * @author wangtonghe
  * @date 2017/10/12 21:11
  */
@@ -23,15 +21,15 @@ public class FreeImageDemo implements PageProcessor {
 
 
     @Override
-    public void process(Page page) {
+    public void process(Page page, CheetahResult cheetahResult) {
         List<String> nextUrls = page.getHtml().$("#content .homepage-tags").get(0).getLinks();
-        page.addWaitRequest(nextUrls);
+        cheetahResult.addWaitRequest(nextUrls);
 
         List<String> fileUrls = page.getHtml().$("#content .listing-primary .listing-data ul").getImgUrls();
-        page.setFileResult(fileUrls);
+        cheetahResult.putFileResults(fileUrls);
 
         List<String> nextPage = page.getHtml().$("#content .listing-primary .pagination").getLinks();
-        page.addWaitRequest(nextPage);
+        cheetahResult.addWaitRequest(nextPage);
 
     }
 

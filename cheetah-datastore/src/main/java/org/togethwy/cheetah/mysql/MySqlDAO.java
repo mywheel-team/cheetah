@@ -34,7 +34,7 @@ public class MySqlDAO {
     public void insert(){
         try {
             Statement statement =  connection.createStatement();
-            String sql = "";
+            String sql = "insert into ";
 //            statement.executeUpdate()
 
         } catch (SQLException e) {

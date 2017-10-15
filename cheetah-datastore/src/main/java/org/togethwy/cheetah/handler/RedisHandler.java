@@ -3,6 +3,7 @@ package org.togethwy.cheetah.handler;
 import com.alibaba.fastjson.JSON;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.togethwy.cheetah.CheetahResult;
 import org.togethwy.cheetah.Result;
 import org.togethwy.cheetah.redis.RedisHelper;
 
@@ -33,8 +34,8 @@ public class RedisHandler implements Handler {
     }
 
     @Override
-    public void handle(List<Result> results) {
-        results.forEach(result -> redisHelper.insert(key, JSON.toJSONString(result.getResult())));
+    public void handle(CheetahResult cheetahResult) {
+        cheetahResult.getResults().forEach(result -> redisHelper.insert(key, JSON.toJSONString(result)));
     }
 
     @Override

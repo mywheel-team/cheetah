@@ -62,45 +62,45 @@ public class Cheetah implements Runnable {
             //从请求队列拿一条请求url
             Request request = waitRequests.poll();
             if (request == null) {
-                if (threadPool.getAliveThreadNum()== 0) {
-                   threadPool.shutdown();
+                if (threadPool.getAliveThreadNum() == 0) {
+                    threadPool.shutdown();
                 }
                 continue;
             }
             threadPool.execute(() -> {
-
-                if(siteConfig.isStartJSONAPI()){
-                    String url = siteConfig.getJsonAPIUrl();
-                    Request jsonReq = new Request(url);
-                    JsonDataResult result = (JsonDataResult) jsonDownloader.download(jsonReq, siteConfig);
-                    pageProcessor.processJSON(result);
-                    handleResult(result);    //处理结果
-                    siteConfig.setJsonAPIUrl(result.getJsonUrl());
-                }
-
+                //页面抓取
                 Page page = (Page) downloader.download(request, siteConfig);
+                CheetahResult cheetahResult = new CheetahResult(page.getUrl());
                 if (page.getStatusCode() == Constant.STATUS_CODE_200) {
-                    try {
-                        pageProcessor.process(page);  //处理页面
-                        handleResult(page);    //处理结果
-                        Thread.sleep(siteConfig.getThreadSleep());
-                    } catch (InterruptedException e) {
-                        logger.error("threadPool InterruptedException error", e);
-                    }
+                    pageProcessor.process(page,cheetahResult);  //处理页面
                 }
+
+                //jsonAPI方式
+                if (siteConfig.isStartJSONAPI()) {
+                    Request jsonConfig = pageProcessor.updateJSONConfig(cheetahResult, siteConfig);
+                    JsonDataResult result = (JsonDataResult) jsonDownloader.download(new Request(jsonConfig), siteConfig);
+                    pageProcessor.processJSON(result,cheetahResult);
+                }
+                handleResult(cheetahResult); //处理结果
+                try {
+                    Thread.sleep(siteConfig.getThreadSleep());
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
             });
         }
     }
 
-    private void handleResult(DownloadResult downloadResult) {
+    private void handleResult(CheetahResult cheetahResult) {
         //默认使用Console处理结果，即打印到控制台
         if (handlers == null) {
             handlers.add(new ConsoleHandler());
         }
-        handlers.forEach(e -> e.handle(downloadResult.getResults()));
+        handlers.forEach(e -> e.handle(cheetahResult));
 
-        if (downloadResult.getWaitRequests() != null && downloadResult.getWaitRequests().size() > 0) {
-            waitRequests.addAll(downloadResult.getWaitRequests());  //添加待处理url
+        if (cheetahResult.getWaitRequests() != null && cheetahResult.getWaitRequests().size() > 0) {
+            waitRequests.addAll(cheetahResult.getWaitRequests());  //添加待处理url
         }
 
     }

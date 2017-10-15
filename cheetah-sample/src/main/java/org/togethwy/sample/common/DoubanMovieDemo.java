@@ -1,6 +1,7 @@
 package org.togethwy.sample.common;
 
 import org.togethwy.cheetah.Cheetah;
+import org.togethwy.cheetah.CheetahResult;
 import org.togethwy.cheetah.SiteConfig;
 import org.togethwy.cheetah.downloader.JsonDataResult;
 import org.togethwy.cheetah.downloader.Page;
@@ -23,7 +24,7 @@ public class DoubanMovieDemo implements PageProcessor {
     private SiteConfig siteConfig = SiteConfig.create();
 
     @Override
-    public void process(Page page) {
+    public void process(Page page, CheetahResult cheetahResult) {
 
         String name = page.getHtml().$("#content h1 span[property=v:itemreviewed]").getValue();
 
@@ -56,7 +57,7 @@ public class DoubanMovieDemo implements PageProcessor {
         result.put("date", date);
         result.put("mark", mark);
 
-        page.addResult(result);
+        cheetahResult.putResult(result);
 
 
     }
@@ -73,14 +74,13 @@ public class DoubanMovieDemo implements PageProcessor {
                 .setThreadSleep(2000)
                 .setThreadNum(3)
                 .setJsonAPIUrl("https://movie.douban.com/j/new_search_subjects?sort=T&range=0,10&tags=&start=0")
-                .setStartJSONAPI(true)
-                .setOnlyAPI(true);
+                .setStartJSONAPI(true);
         return siteConfig;
     }
 
 
     @Override
-    public void processJSON(JsonDataResult jsonData) {
+    public void processJSON(JsonDataResult jsonData,CheetahResult cheetahResult) {
 
         List<Map<String, Object>> listData = jsonData.parseListFromMap();
 
@@ -100,10 +100,10 @@ public class DoubanMovieDemo implements PageProcessor {
 
 
     public static void main(String[] args) {
-            Cheetah.create(new DoubanMovieDemo())
-                    .setHandler(new ElasticHandler("localhost",9300,"elasticsearch","cheetah","movie"))
-                    .setHandler(new RedisHandler("localhost","movie"))
-                    .setHandler(new ConsoleHandler())
-                    .run();
+        Cheetah.create(new DoubanMovieDemo())
+                .setHandler(new ElasticHandler("localhost", 9300, "elasticsearch", "cheetah", "movie"))
+                .setHandler(new RedisHandler("localhost", "movie"))
+                .setHandler(new ConsoleHandler())
+                .run();
     }
 }

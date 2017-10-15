@@ -19,4 +19,15 @@ public class UrlTest {
 
 
     }
+
+    @Test
+    public void test2() {
+        String url = "http://music.163.com/weapi/v1/resource/comments/R_SO_4_5051245?csrf_token=";
+        String numStr = url.substring(url.lastIndexOf("R_SO_4_")+7, url.lastIndexOf("?"));
+        String newStr = "111111";
+        String newUrl = url.replace(numStr, newStr);
+        System.out.println(newUrl);
+
+
+    }
 }

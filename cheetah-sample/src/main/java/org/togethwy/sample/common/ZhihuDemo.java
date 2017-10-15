@@ -1,6 +1,7 @@
 package org.togethwy.sample.common;
 
 import org.togethwy.cheetah.Cheetah;
+import org.togethwy.cheetah.CheetahResult;
 import org.togethwy.cheetah.SiteConfig;
 import org.togethwy.cheetah.downloader.Page;
 import org.togethwy.cheetah.handler.ConsoleHandler;
@@ -20,7 +21,7 @@ public class ZhihuDemo implements PageProcessor {
     private SiteConfig siteConfig = SiteConfig.create();
 
     @Override
-    public void process(Page page) {
+    public void process(Page page, CheetahResult cheetahResult) {
 
         Map<String, Object> result = new HashMap<>();
 
@@ -41,14 +42,14 @@ public class ZhihuDemo implements PageProcessor {
         result.put("follower", follow.get(1).$(".NumberBoard-value").getValue());
         result.put("siteUrl", page.getUrl());
 
-        page.addResult(result);
+        cheetahResult.putResult(result);
 
 
         List<String> links =  main.$(".List > div").get(1).$(".List-item .Popover").getLinks();
 
         links.forEach(link -> {
             String newLink = link + "/followers";
-            page.addWaitRequest(newLink);
+            cheetahResult.addWaitRequest(newLink);
         });
 
 

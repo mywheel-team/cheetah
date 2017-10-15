@@ -2,6 +2,7 @@ package org.togethwy.cheetah.handler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.togethwy.cheetah.CheetahResult;
 import org.togethwy.cheetah.Result;
 import org.togethwy.cheetah.elasticsearch.ESHelper;
 
@@ -38,10 +39,9 @@ public class ElasticHandler implements Handler {
 
 
     @Override
-    public void handle(List<Result> results) {
-        results.forEach(result->{
-            esHelper.insert(index,type,result.getResult());
-
+    public void handle(CheetahResult cheetahResult) {
+        cheetahResult.getResults().forEach(result->{
+            esHelper.insert(index,type,result);
         });
     }
 

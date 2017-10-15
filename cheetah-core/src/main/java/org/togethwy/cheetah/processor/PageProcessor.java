@@ -1,9 +1,12 @@
 package org.togethwy.cheetah.processor;
 
+import org.togethwy.cheetah.CheetahResult;
+import org.togethwy.cheetah.Result;
 import org.togethwy.cheetah.SiteConfig;
 import org.togethwy.cheetah.downloader.DownloadResult;
 import org.togethwy.cheetah.downloader.JsonDataResult;
 import org.togethwy.cheetah.downloader.Page;
+import org.togethwy.cheetah.downloader.Request;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,7 +25,7 @@ public interface PageProcessor {
      * 处理页面过程
      * @param page 页面数据
      */
-    void process(Page page);
+    void process(Page page, CheetahResult result);
 
     /**
      * 配置并获取页面
@@ -34,8 +37,12 @@ public interface PageProcessor {
      *
      * @param jsonData
      */
-    default void processJSON(JsonDataResult jsonData){
+    default void processJSON(JsonDataResult jsonData,CheetahResult cheetahResult){
 
+    }
+
+    default Request updateJSONConfig(CheetahResult cheetahResult,SiteConfig siteConfig){
+        return null;
     }
 
 

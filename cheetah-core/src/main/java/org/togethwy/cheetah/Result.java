@@ -22,7 +22,6 @@ public class Result {
     public <T>void put(String key, T value) {
         if (value != null) {
             result.put(key, value);
-
         }
     }
 

@@ -1,8 +1,6 @@
 package org.togethwy.cheetah.handler;
 
-import org.togethwy.cheetah.Result;
-
-import java.util.List;
+import org.togethwy.cheetah.CheetahResult;
 
 /**
  * @author wangtonghe
@@ -12,9 +10,9 @@ public interface Handler {
 
     /**
      * 处理爬取结果
-     * @param results 结果集
+     * @param result 结果集
      */
-    void handle(List<Result> results);
+    void handle(CheetahResult result);
 
     /**
      * 对handler做结尾工作

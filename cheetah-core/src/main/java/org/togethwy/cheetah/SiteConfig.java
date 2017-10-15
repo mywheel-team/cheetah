@@ -1,5 +1,8 @@
 package org.togethwy.cheetah;
 
+import org.togethwy.cheetah.downloader.Request;
+import org.togethwy.cheetah.downloader.RequestMethod;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,12 +65,9 @@ public class SiteConfig {
      */
     private String jsonAPIUrl;
 
-    /**
-     * 只使用API请求
-     */
-    private boolean onlyAPI;
-
     private boolean isStartJSONAPI;
+
+    private Request jsonConfig;
 
     public boolean isStartJSONAPI() {
         return isStartJSONAPI;
@@ -78,13 +78,12 @@ public class SiteConfig {
         return this;
     }
 
-    public boolean isOnlyAPI() {
-        return onlyAPI;
+    public Request getJsonConfig() {
+        return jsonConfig;
     }
 
-    public SiteConfig setOnlyAPI(boolean onlyAPI) {
-        this.onlyAPI = onlyAPI;
-        return this;
+    public void setJsonConfig(Request jsonConfig) {
+        this.jsonConfig = jsonConfig;
     }
 
     public Map<String, String> getHeaders() {
