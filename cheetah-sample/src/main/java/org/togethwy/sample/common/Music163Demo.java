@@ -8,7 +8,9 @@ import org.togethwy.cheetah.downloader.Page;
 import org.togethwy.cheetah.downloader.Request;
 import org.togethwy.cheetah.downloader.RequestMethod;
 import org.togethwy.cheetah.handler.ConsoleHandler;
+import org.togethwy.cheetah.handler.RedisHandler;
 import org.togethwy.cheetah.processor.PageProcessor;
+import org.togethwy.cheetah.selector.Html;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -25,20 +27,39 @@ public class Music163Demo implements PageProcessor {
 
     @Override
     public void process(Page page, CheetahResult cheetahResult) {
-        String name = page.getHtml().$(".g-bd4 .f-ff2").getValue();
-//        http://music.163.com/#/song?id=505851663
+
         String url = page.getUrl();
-        String musicId = url.substring(url.lastIndexOf("id=")+3).trim();
-        Map<String, Object> result = new HashMap<>();
-        result.put("name", name);
-        result.put("id", musicId);
-        cheetahResult.putResult(result);
+        int index = url.lastIndexOf("song?id=");
+        if (index > -1) {
+            Html songInfo = page.getHtml().$(".m-lycifo .cnt");
+            String name = songInfo.$(".tit em").getValue();
+            String singer = songInfo.$("p").get(0).$("span a").getValue();
+            String album = songInfo.$("p").get(1).$("a").getValue();
+            String musicId = url.substring(index + 8).trim();
+            Map<String, Object> result = new HashMap<>();
+            result.put("name", name);
+            result.put("id", musicId);
+            result.put("singer", singer);
+            result.put("album", album);
+            cheetahResult.putResult(result);
+            cheetahResult.setStartJsonAPI(true);
+        } else {
+            Html discover = page.getHtml().$("#discover-module .g-mn1 .m-cvrlst");
+            List<String> playUrls = discover.getLinks("li div.u-cover");
+            cheetahResult.addWaitRequest(playUrls);
+
+            Html playInfo = page.getHtml().$("#song-list-pre-cache ul");
+            List<String> songUrls = playInfo.getLinks();
+            cheetahResult.addWaitRequest(songUrls);
+            cheetahResult.setSkip(true);
+        }
+
     }
 
     @Override
     public SiteConfig setAndGetSiteConfig() {
         this.siteConfig.setDomain("http://music.163.com")
-                .setStartUrl("http://music.163.com/song?id=22538947")
+                .setStartUrl("http://music.163.com/discover")
                 .setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36")
                 .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
                 .addHeader("Accept-Encoding", "gzip, deflate, sdch, br")
@@ -53,9 +74,9 @@ public class Music163Demo implements PageProcessor {
     @Override
     public void processJSON(JsonDataResult jsonData, CheetahResult cheetahResult) {
         List<MusicContent> lists = new ArrayList<>();
-        Map<String,Object> commentData = jsonData.parseMap();
+        Map<String, Object> commentData = jsonData.parseMap();
         int commentNum = (Integer) commentData.get("total");
-        List<Map<String, Object>> listData =  (List<Map<String, Object>>)commentData.get("hotComments");
+        List<Map<String, Object>> listData = (List<Map<String, Object>>) commentData.get("hotComments");
         listData.forEach(map -> {
             Map<String, String> user = (Map<String, String>) map.get("user");
             String nickName = user.get("nickname");
@@ -64,8 +85,8 @@ public class Music163Demo implements PageProcessor {
             MusicContent musicContent = new MusicContent(nickName, likeNum, content);
             lists.add(musicContent);
         });
-        cheetahResult.putField("hotComments",lists);
-        cheetahResult.putField("commentNum",commentNum);
+        cheetahResult.putField("hotComments", lists);
+        cheetahResult.putField("commentNum", commentNum);
     }
 
     @Override
@@ -92,6 +113,7 @@ public class Music163Demo implements PageProcessor {
     public static void main(String[] args) {
         Cheetah.create(new Music163Demo())
                 .setHandler(new ConsoleHandler())
+                .setHandler(new RedisHandler("127.0.0.1","music"))
                 .run();
     }
 

@@ -35,7 +35,12 @@ public class RedisHandler implements Handler {
 
     @Override
     public void handle(CheetahResult cheetahResult) {
-        cheetahResult.getResults().forEach(result -> redisHelper.insert(key, JSON.toJSONString(result)));
+
+        cheetahResult.getResults().forEach(result -> {
+            System.out.println("redis:"+result);
+            redisHelper.insert(key, JSON.toJSONString(result));
+
+        });
     }
 
     @Override

@@ -76,12 +76,15 @@ public class Cheetah implements Runnable {
                 }
 
                 //jsonAPI方式
-                if (siteConfig.isStartJSONAPI()) {
+                if (siteConfig.isStartJSONAPI()&&cheetahResult.isStartJsonAPI()) {
                     Request jsonConfig = pageProcessor.updateJSONConfig(cheetahResult, siteConfig);
                     JsonDataResult result = (JsonDataResult) jsonDownloader.download(new Request(jsonConfig), siteConfig);
                     pageProcessor.processJSON(result,cheetahResult);
                 }
-                handleResult(cheetahResult); //处理结果
+                handleWaitRequest(cheetahResult);
+                if(!cheetahResult.isSkip()){
+                    handleResult(cheetahResult); //处理结果
+                }
                 try {
                     Thread.sleep(siteConfig.getThreadSleep());
                 } catch (InterruptedException e) {
@@ -99,6 +102,11 @@ public class Cheetah implements Runnable {
         }
         handlers.forEach(e -> e.handle(cheetahResult));
 
+
+
+    }
+
+    private void handleWaitRequest(CheetahResult cheetahResult){
         if (cheetahResult.getWaitRequests() != null && cheetahResult.getWaitRequests().size() > 0) {
             waitRequests.addAll(cheetahResult.getWaitRequests());  //添加待处理url
         }

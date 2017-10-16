@@ -4,6 +4,7 @@ import org.togethwy.cheetah.handler.RedisHandler;
 import redis.clients.jedis.Jedis;
 
 import javax.annotation.Resource;
+import java.util.Set;
 
 /**
  * redis帮助类
@@ -30,6 +31,10 @@ public class RedisHelper {
     public void insert(String key,String value){
         jedis.sadd(key,value);
 
+    }
+
+    public Set<String> getByKey(String key){
+       return jedis.smembers(key);
     }
 
 

@@ -14,6 +14,7 @@ public class Request {
 
     public Request(String url) {
         this.url = url;
+        this.requestMethod= RequestMethod.GET;
     }
 
     public Request(String url,Map<String,String> paramMap){

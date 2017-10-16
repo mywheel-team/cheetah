@@ -18,6 +18,16 @@ public class CheetahResult {
 
     private String currentUrl;
 
+    /**
+     * 是否过滤本次抓取结果
+     */
+    private boolean isSkip;
+
+    /**
+     * 本次抓取结果是否用jsonAPI处理
+     */
+    private boolean isStartJsonAPI;
+
     private List<Map<String, Object>> results = new ArrayList<>();
 
     private List<String> fileResults = new ArrayList<>();
@@ -33,6 +43,14 @@ public class CheetahResult {
             s = UrlUtils.canonicalizeUrl(s, currentUrl);
             this.waitRequests.add(new Request(s));
         }
+    }
+
+    public boolean isSkip() {
+        return isSkip;
+    }
+
+    public void setSkip(boolean skip) {
+        isSkip = skip;
     }
 
     public void addWaitRequest(String request) {
@@ -79,5 +97,11 @@ public class CheetahResult {
         return results;
     }
 
+    public boolean isStartJsonAPI() {
+        return isStartJsonAPI;
+    }
 
+    public void setStartJsonAPI(boolean startJsonAPI) {
+        isStartJsonAPI = startJsonAPI;
+    }
 }
