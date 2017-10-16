@@ -5,6 +5,8 @@ import org.togethwy.cheetah.CheetahResult;
 import org.togethwy.cheetah.SiteConfig;
 import org.togethwy.cheetah.downloader.JsonDataResult;
 import org.togethwy.cheetah.downloader.Page;
+import org.togethwy.cheetah.downloader.Request;
+import org.togethwy.cheetah.downloader.RequestMethod;
 import org.togethwy.cheetah.handler.ConsoleHandler;
 import org.togethwy.cheetah.handler.RedisHandler;
 import org.togethwy.cheetah.processor.PageProcessor;
@@ -80,29 +82,34 @@ public class DoubanMovieDemo implements PageProcessor {
 
 
     @Override
-    public void processJSON(JsonDataResult jsonData,CheetahResult cheetahResult) {
+    public void processJSON(JsonDataResult jsonData, CheetahResult cheetahResult) {
 
         List<Map<String, Object>> listData = jsonData.parseListFromMap();
 
         listData.forEach(eachMap -> {
             String url = (String) eachMap.get("url");
-            jsonData.addWaitRequest(url);
+            cheetahResult.addWaitRequest(url);
 
         });
-        String url = jsonData.getUrl();
+
+
+    }
+
+    @Override
+    public Request updateJSONConfig(CheetahResult cheetahResult, SiteConfig siteConfig) {
+        String url = siteConfig.getJsonAPIUrl();
         String numStr = url.substring(url.lastIndexOf("start="));
         int num = Integer.parseInt(numStr.substring(6));
         String newUrl = url.replace(numStr, "start=" + (num + 10));
-        System.out.println(newUrl);
-        jsonData.setJsonUrl(newUrl);
-
+        siteConfig.setJsonAPIUrl(newUrl);
+        return new Request(newUrl, null, RequestMethod.GET);
     }
 
 
     public static void main(String[] args) {
         Cheetah.create(new DoubanMovieDemo())
-                .setHandler(new ElasticHandler("localhost", 9300, "elasticsearch", "cheetah", "movie"))
-                .setHandler(new RedisHandler("localhost", "movie"))
+//                .setHandler(new ElasticHandler("localhost", 9300, "elasticsearch", "cheetah", "movie2"))
+                .setHandler(new RedisHandler("localhost", "movie2"))
                 .setHandler(new ConsoleHandler())
                 .run();
     }

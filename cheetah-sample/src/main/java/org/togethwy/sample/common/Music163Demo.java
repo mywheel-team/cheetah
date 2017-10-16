@@ -2,7 +2,6 @@ package org.togethwy.sample.common;
 
 import org.togethwy.cheetah.Cheetah;
 import org.togethwy.cheetah.CheetahResult;
-import org.togethwy.cheetah.Result;
 import org.togethwy.cheetah.SiteConfig;
 import org.togethwy.cheetah.downloader.JsonDataResult;
 import org.togethwy.cheetah.downloader.Page;
