@@ -12,8 +12,8 @@ import java.util.*;
  */
 public class CheetahResult {
 
-    CheetahResult(String currentUrl){
-        this.currentUrl= currentUrl;
+    CheetahResult(String currentUrl) {
+        this.currentUrl = currentUrl;
     }
 
     private String currentUrl;
@@ -59,10 +59,15 @@ public class CheetahResult {
         addWaitRequest(requests);
     }
 
-    public Set<Request> getWaitRequests() {
+    Set<Request> getWaitRequests() {
         return waitRequests;
     }
 
+    Set<String> getWaitRequestsAsString(){
+        Set<String> waitUrls = new HashSet<>();
+        waitRequests.forEach(request -> waitUrls.add(request.getUrl()));
+        return waitUrls;
+    }
 
 
     public void putFileResult(String fileUrl) {

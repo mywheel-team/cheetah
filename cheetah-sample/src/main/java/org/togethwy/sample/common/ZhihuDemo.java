@@ -6,6 +6,7 @@ import org.togethwy.cheetah.SiteConfig;
 import org.togethwy.cheetah.downloader.Page;
 import org.togethwy.cheetah.handler.ConsoleHandler;
 import org.togethwy.cheetah.handler.ElasticHandler;
+import org.togethwy.cheetah.handler.RedisHandler;
 import org.togethwy.cheetah.processor.PageProcessor;
 import org.togethwy.cheetah.selector.Html;
 import org.togethwy.cheetah.util.StringUtils;
@@ -62,6 +63,7 @@ public class ZhihuDemo implements PageProcessor {
             String pageNum =curPage.substring(curPage.lastIndexOf("?page=")+6);
             String url = curPage.replace(pageNum, String.valueOf(Integer.parseInt(pageNum)+1));
             cheetahResult.addWaitRequest(url);
+            cheetahResult.setSkip(true);
         }else{
             if(followerNum>0){
                 cheetahResult.addWaitRequest(curPage+"?page=2");
@@ -93,7 +95,8 @@ public class ZhihuDemo implements PageProcessor {
     public static void main(String[] args) {
         Cheetah.create(new ZhihuDemo())
                 .setHandler(new ConsoleHandler())
-                .setHandler(new ElasticHandler("127.0.0.1", 9300, "wth-elastic", "zhihu", "user_data"))
+                .setHandler(new ElasticHandler("127.0.0.1", 9300, "wth-elastic", "zhihu_new", "user_data"))
+                .setHandler(new RedisHandler("127.0.0.1","zhihu_new"))
                 .run();
     }
 }

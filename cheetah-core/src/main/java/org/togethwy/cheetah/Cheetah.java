@@ -8,9 +8,7 @@ import org.togethwy.cheetah.thread.ThreadPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -33,7 +31,9 @@ public class Cheetah implements Runnable {
 
     private SiteConfig siteConfig;
 
-    private Queue<Request> waitRequests = new LinkedBlockingQueue<>();
+    private volatile Queue<Request> waitRequests = new LinkedBlockingQueue<>();
+
+    private Set<Integer> waitReqBackup = new HashSet<>();
 
 
     private Cheetah(PageProcessor pageProcessor) {
@@ -100,6 +100,8 @@ public class Cheetah implements Runnable {
         if (handlers == null) {
             handlers.add(new ConsoleHandler());
         }
+//        cheetahResult.getResults().forEach();
+
         handlers.forEach(e -> e.handle(cheetahResult));
 
 
@@ -107,10 +109,16 @@ public class Cheetah implements Runnable {
     }
 
     private void handleWaitRequest(CheetahResult cheetahResult){
-        if (cheetahResult.getWaitRequests() != null && cheetahResult.getWaitRequests().size() > 0) {
-            waitRequests.addAll(cheetahResult.getWaitRequests());  //添加待处理url
+        Set<Request> waitAddUrl =cheetahResult.getWaitRequests();
+        if (waitAddUrl != null && waitAddUrl.size() > 0) {
+            waitAddUrl.forEach(request->{
+                String url = request.getUrl();
+                if(!waitReqBackup.contains(url.hashCode())){
+                    waitReqBackup.add(url.hashCode());
+                    waitRequests.add(request);
+                }
+            });
         }
-
     }
 
 }

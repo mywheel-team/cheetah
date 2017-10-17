@@ -27,6 +27,11 @@ public class RedisHandler implements Handler {
         this.key = key;
     }
 
+    /**
+     * redis 结果处理器
+     * @param host 域名
+     * @param key  key
+     */
     public RedisHandler(String host,String key){
         this.redisHelper = new RedisHelper(host);
         this.key = key;
