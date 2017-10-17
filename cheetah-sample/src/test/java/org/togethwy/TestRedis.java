@@ -24,7 +24,7 @@ public class TestRedis {
     @Test
     public void test(){
         RedisHelper redisHelper = new RedisHelper("127.0.0.1");
-        Set<String> musics = redisHelper.getByKey("music");
+        Set<String> musics = redisHelper.getByKey("r_redis");
         List<Map<String,Object>> list = new ArrayList<>();
         musics.forEach(mu->{
             System.out.println(mu);

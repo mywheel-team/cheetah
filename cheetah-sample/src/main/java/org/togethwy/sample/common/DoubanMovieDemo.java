@@ -29,7 +29,10 @@ public class DoubanMovieDemo implements PageProcessor {
     public void process(Page page, CheetahResult cheetahResult) {
 
         String name = page.getHtml().$("#content h1 span[property=v:itemreviewed]").getValue();
-
+        if(name==null){
+            cheetahResult.setSkip(true);
+            return;
+        }
         Html info = page.getHtml().$("#info");
 
         String author = info.get(0).$("span .attrs a").getValue();
@@ -50,24 +53,24 @@ public class DoubanMovieDemo implements PageProcessor {
         result.put("name", name);
         result.put("author", author);
         result.put("actor", actor_list);
-        result.put("lang", lang);
-        result.put("country", country);
+        result.put("lang", lang.trim());
+        result.put("country", country.trim());
         result.put("category", category_list);
         if (date != null && date.indexOf("(") > 0) {
             date = date.substring(0, date.indexOf("("));
         }
         result.put("date", date);
-        result.put("mark", mark);
+        result.put("mark", Float.parseFloat(mark));
 
         cheetahResult.putResult(result);
-
+        cheetahResult.setStartJsonAPI(true);
 
     }
 
     @Override
     public SiteConfig setAndGetSiteConfig() {
         this.siteConfig.setDomain("https://movie.douban.com")
-                .setStartUrl("https://movie.douban.com")
+                .setStartUrl("https://movie.douban.com/subject/1292052")
                 .setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36")
                 .addCookie("bid", "PI0P2w4aMDI")
                 .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
@@ -108,8 +111,8 @@ public class DoubanMovieDemo implements PageProcessor {
 
     public static void main(String[] args) {
         Cheetah.create(new DoubanMovieDemo())
-//                .setHandler(new ElasticHandler("localhost", 9300, "elasticsearch", "cheetah", "movie2"))
-                .setHandler(new RedisHandler("localhost", "movie2"))
+                .setHandler(new ElasticHandler("localhost", 9300, "wth-elastic", "cheetah_test", "douban"))
+                .setHandler(new RedisHandler("localhost", "r_movie"))
                 .setHandler(new ConsoleHandler())
                 .run();
     }

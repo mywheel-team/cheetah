@@ -5,8 +5,10 @@ import org.togethwy.cheetah.CheetahResult;
 import org.togethwy.cheetah.SiteConfig;
 import org.togethwy.cheetah.downloader.Page;
 import org.togethwy.cheetah.handler.ConsoleHandler;
+import org.togethwy.cheetah.handler.ElasticHandler;
 import org.togethwy.cheetah.processor.PageProcessor;
 import org.togethwy.cheetah.selector.Html;
+import org.togethwy.cheetah.util.StringUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,12 +25,18 @@ public class ZhihuDemo implements PageProcessor {
     @Override
     public void process(Page page, CheetahResult cheetahResult) {
 
-        Map<String, Object> result = new HashMap<>();
 
         Html main = page.getHtml().$(".Profile-mainColumn");
 
         Html listInfo = main.$(".ProfileMain-header ul li");
-        result.put("name", page.getHtml().$(".ProfileHeader-title .ProfileHeader-name").getValue());
+
+        String name = page.getHtml().$(".ProfileHeader-title .ProfileHeader-name").getValue();
+        if (StringUtils.isEmpty(name)) {
+            cheetahResult.setSkip(true);
+            return;
+        }
+        Map<String, Object> result = new HashMap<>();
+        result.put("name", name);
         result.put("answerNum", listInfo.get(1).$(".Tabs-meta").getValue());
         result.put("quesNum", listInfo.get(2).$(".Tabs-meta").getValue());
         result.put("article", listInfo.get(3).$(".Tabs-meta").getValue());
@@ -38,14 +46,28 @@ public class ZhihuDemo implements PageProcessor {
 
         Html follow = sideInfo.$(".FollowshipCard .FollowshipCard-counts a");
 
-        result.put("following", follow.get(0).$(".NumberBoard-value").getValue());
-        result.put("follower", follow.get(1).$(".NumberBoard-value").getValue());
+        int followNum = Integer.parseInt(follow.get(0).$(".NumberBoard-value").getValue());
+        int followerNum =  Integer.parseInt(follow.get(1).$(".NumberBoard-value").getValue());
+
+        result.put("following", followNum);
+        result.put("follower", followerNum);
         result.put("siteUrl", page.getUrl());
 
         cheetahResult.putResult(result);
 
 
-        List<String> links =  main.$(".List > div").get(1).$(".List-item .Popover").getLinks();
+        List<String> links = main.$(".List > div").get(1).$(".List-item .ContentItem-head .Popover").getLinks();
+        String curPage = page.getUrl();
+        if(curPage.contains("?page=")){
+            String pageNum =curPage.substring(curPage.lastIndexOf("?page=")+6);
+            String url = curPage.replace(pageNum, String.valueOf(Integer.parseInt(pageNum)+1));
+            cheetahResult.addWaitRequest(url);
+        }else{
+            if(followerNum>0){
+                cheetahResult.addWaitRequest(curPage+"?page=2");
+            }
+        }
+
 
         links.forEach(link -> {
             String newLink = link + "/followers";
@@ -64,12 +86,14 @@ public class ZhihuDemo implements PageProcessor {
                 .addHeader("Accept-Encoding", "gzip, deflate, sdch, br")
                 .addHeader("Accept-Language", "zh-CN, zh; q=0.8, en; q=0.6")
                 .setThreadSleep(2000)
-                .setThreadNum(3)
-                .setStartJSONAPI(false);
+                .setThreadNum(3);
         return siteConfig;
     }
 
     public static void main(String[] args) {
-        Cheetah.create(new ZhihuDemo()).setHandler(new ConsoleHandler()).run();
+        Cheetah.create(new ZhihuDemo())
+                .setHandler(new ConsoleHandler())
+                .setHandler(new ElasticHandler("127.0.0.1", 9300, "wth-elastic", "zhihu", "user_data"))
+                .run();
     }
 }
