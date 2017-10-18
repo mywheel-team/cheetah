@@ -42,7 +42,6 @@ public class RedisHandler implements Handler {
     public void handle(CheetahResult cheetahResult) {
 
         cheetahResult.getResults().forEach(result -> {
-            System.out.println("redis:"+result);
             redisHelper.insert(key, JSON.toJSONString(result));
 
         });

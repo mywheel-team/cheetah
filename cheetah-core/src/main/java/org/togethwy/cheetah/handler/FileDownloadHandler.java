@@ -17,7 +17,7 @@ import java.util.Set;
 public class FileDownloadHandler implements Handler {
     private String path;
 
-    private static String HTTP_PREFIX = "http:";
+    private static String HTTP_PREFIX = "http://";
 
     private String domain;
 
@@ -56,7 +56,7 @@ public class FileDownloadHandler implements Handler {
      * @return
      */
     private static String doOriginUrl(String originUrl, String domain) {
-        if (originUrl.startsWith("http")) {
+        if (originUrl.startsWith(HTTP_PREFIX)) {
             return originUrl;
         } else if (originUrl.startsWith("//")) {
             return HTTP_PREFIX + originUrl;

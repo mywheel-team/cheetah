@@ -8,6 +8,7 @@ import org.togethwy.cheetah.downloader.Page;
 import org.togethwy.cheetah.downloader.Request;
 import org.togethwy.cheetah.downloader.RequestMethod;
 import org.togethwy.cheetah.handler.ConsoleHandler;
+import org.togethwy.cheetah.handler.ElasticHandler;
 import org.togethwy.cheetah.handler.RedisHandler;
 import org.togethwy.cheetah.processor.PageProcessor;
 import org.togethwy.cheetah.selector.Html;
@@ -44,9 +45,19 @@ public class Music163Demo implements PageProcessor {
             cheetahResult.putResult(result);
             cheetahResult.setStartJsonAPI(true);
         } else {
-            Html discover = page.getHtml().$("#discover-module .g-mn1 .m-cvrlst");
-            List<String> playUrls = discover.getLinks("li div.u-cover");
+            Html discover = page.getHtml().$("#m-disc-pl-c");
+
+            //歌单类型
+            List<String> typeUrls = discover.$("#cateListBox > .bd .f-cb").get(0).getLinks();
+            cheetahResult.addWaitRequest(typeUrls);
+
+            //歌单
+            List<String> playUrls = discover.getLinks("#m-pl-container li > div.u-cover");
             cheetahResult.addWaitRequest(playUrls);
+
+            //下一页
+            List<String> nextUrl = discover.getLinks("#m-pl-pager .u-page");
+            cheetahResult.addWaitRequest(nextUrl.get(nextUrl.size()-1));
 
             Html playInfo = page.getHtml().$("#song-list-pre-cache ul");
             List<String> songUrls = playInfo.getLinks();
@@ -59,7 +70,7 @@ public class Music163Demo implements PageProcessor {
     @Override
     public SiteConfig setAndGetSiteConfig() {
         this.siteConfig.setDomain("http://music.163.com")
-                .setStartUrl("http://music.163.com/discover")
+                .setStartUrl("http://music.163.com/discover/playlist/?cat=%E5%8D%8E%E8%AF%AD")
                 .setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36")
                 .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
                 .addHeader("Accept-Encoding", "gzip, deflate, sdch, br")
@@ -113,7 +124,8 @@ public class Music163Demo implements PageProcessor {
     public static void main(String[] args) {
         Cheetah.create(new Music163Demo())
                 .setHandler(new ConsoleHandler())
-                .setHandler(new RedisHandler("127.0.0.1","music"))
+//                .setHandler(new ElasticHandler("127.0.0.1",9300,"wth-elastic","music","Netease"))
+//                .setHandler(new RedisHandler("127.0.0.1","music163"))
                 .run();
     }
 

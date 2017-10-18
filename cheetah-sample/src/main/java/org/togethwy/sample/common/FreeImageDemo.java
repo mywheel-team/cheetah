@@ -26,7 +26,9 @@ public class FreeImageDemo implements PageProcessor {
         cheetahResult.addWaitRequest(nextUrls);
 
         List<String> fileUrls = page.getHtml().$("#content .listing-primary .listing-data ul").getImgUrls();
-        cheetahResult.putFileResults(fileUrls);
+        fileUrls.forEach(url->{
+            cheetahResult.putFileResult(url.replace("small","large"));
+        });
 
         List<String> nextPage = page.getHtml().$("#content .listing-primary .pagination").getLinks();
         cheetahResult.addWaitRequest(nextPage);

@@ -38,7 +38,7 @@ public class CheetahResult {
     public void addWaitRequest(List<String> urls) {
         for (String s : urls) {
             if (StringUtils.isEmpty(s) || s.equals("#") || s.startsWith("javascript:")) {
-                break;
+                continue;
             }
             s = UrlUtils.canonicalizeUrl(s, currentUrl);
             this.waitRequests.add(new Request(s));

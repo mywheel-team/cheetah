@@ -82,6 +82,15 @@ public class Html implements Selector{
 
     }
 
+    public Selector getLast(){
+        int index ;
+        if(elements!=null&&((index=elements.size()-1)>=0)){
+            return new Html(document,elements.get(index));
+        }
+        return new Html();
+
+    }
+
 
 
     public List<String> getLinks(String selector) {
