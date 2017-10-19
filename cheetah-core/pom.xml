@@ -40,6 +40,12 @@
             <version>1.10.1</version>
         </dependency>
 
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+
 
         <!--解析json包，fastjson-->
         <dependency>

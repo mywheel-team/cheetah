@@ -65,9 +65,16 @@ public class SiteConfig {
      */
     private String jsonAPIUrl;
 
+    /**
+     * 是否使用jsonAPI
+     */
     private boolean isStartJSONAPI;
 
-    private Request jsonConfig;
+    /**
+     * 开启中断重启（从上次中断点重新爬）
+     */
+    private boolean openBreakRestart;
+
 
     public boolean isStartJSONAPI() {
         return isStartJSONAPI;
@@ -76,14 +83,6 @@ public class SiteConfig {
     public SiteConfig setStartJSONAPI(boolean startJSONAPI) {
         isStartJSONAPI = startJSONAPI;
         return this;
-    }
-
-    public Request getJsonConfig() {
-        return jsonConfig;
-    }
-
-    public void setJsonConfig(Request jsonConfig) {
-        this.jsonConfig = jsonConfig;
     }
 
     public Map<String, String> getHeaders() {
@@ -174,6 +173,15 @@ public class SiteConfig {
 
     public SiteConfig setThreadNum(int threadNum) {
         this.threadNum = threadNum;
+        return this;
+    }
+
+    public boolean isBreakRestart() {
+        return openBreakRestart;
+    }
+
+    public SiteConfig openBreakRestart(boolean openBreakRestart) {
+        this.openBreakRestart = openBreakRestart;
         return this;
     }
 }

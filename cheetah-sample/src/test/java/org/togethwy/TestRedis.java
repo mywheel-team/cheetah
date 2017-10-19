@@ -1,10 +1,7 @@
 package org.togethwy;
 
-import com.alibaba.fastjson.JSON;
-import org.junit.Before;
 import org.junit.Test;
 import org.togethwy.cheetah.redis.RedisHelper;
-import redis.clients.jedis.Jedis;
 
 import java.util.*;
 

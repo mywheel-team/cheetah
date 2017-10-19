@@ -63,8 +63,8 @@ public class CheetahResult {
         return waitRequests;
     }
 
-    Set<String> getWaitRequestsAsString(){
-        Set<String> waitUrls = new HashSet<>();
+    List<String> getWaitRequestsAsString(){
+        List<String> waitUrls = new ArrayList<>();
         waitRequests.forEach(request -> waitUrls.add(request.getUrl()));
         return waitUrls;
     }

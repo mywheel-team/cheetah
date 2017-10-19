@@ -124,8 +124,8 @@ public class Music163Demo implements PageProcessor {
     public static void main(String[] args) {
         Cheetah.create(new Music163Demo())
                 .setHandler(new ConsoleHandler())
-//                .setHandler(new ElasticHandler("127.0.0.1",9300,"wth-elastic","music","Netease"))
-//                .setHandler(new RedisHandler("127.0.0.1","music163"))
+                .setHandler(new ElasticHandler("127.0.0.1",9300,"wth-elastic","music","Netease"))
+                .setHandler(new RedisHandler("127.0.0.1","music163"))
                 .run();
     }
 

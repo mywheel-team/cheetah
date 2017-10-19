@@ -79,7 +79,8 @@ public class DoubanMovieDemo implements PageProcessor {
                 .setThreadSleep(2000)
                 .setThreadNum(3)
                 .setJsonAPIUrl("https://movie.douban.com/j/new_search_subjects?sort=T&range=0,10&tags=&start=0")
-                .setStartJSONAPI(true);
+                .setStartJSONAPI(true)
+                .openBreakRestart(false); //开启断点重爬，从上次中断的位置开始爬
         return siteConfig;
     }
 
@@ -111,9 +112,9 @@ public class DoubanMovieDemo implements PageProcessor {
 
     public static void main(String[] args) {
         Cheetah.create(new DoubanMovieDemo())
-                .setHandler(new ElasticHandler("localhost", 9300, "wth-elastic", "cheetah_new", "movie"))
-                .setHandler(new RedisHandler("localhost", "douban_movie"))
                 .setHandler(new ConsoleHandler())
+//                .setHandler(new ElasticHandler("localhost", 9300, "wth-elastic", "cheetah_new", "movie"))
+                .setHandler(new RedisHandler("127.0.0.1", "douban_movie_3"))
                 .run();
     }
 }

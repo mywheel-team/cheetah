@@ -30,4 +30,5 @@ public class TestRedis {
         });
         System.out.println(list.size());
     }
+
 }
