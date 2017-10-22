@@ -1,5 +1,6 @@
 package org.togethwy;
 
+import com.alibaba.fastjson.JSON;
 import org.junit.Test;
 import org.togethwy.cheetah.redis.RedisHelper;
 
@@ -21,13 +22,13 @@ public class TestRedis {
     @Test
     public void test(){
         RedisHelper redisHelper = new RedisHelper("127.0.0.1");
-        Set<String> zhihus = redisHelper.getByKey("zhihu_new");
-//        List<Map<String,Object>> list = new ArrayList<>();
-//        zhihus.forEach(mu->{
-//            System.out.println(mu);
-//            Map<String,Object> map = JSON.parseObject(mu);
-//        });
-        System.out.println("一共有："+zhihus.size()+"条数据");
+        Set<String> items = redisHelper.getByKey("music163");
+        List<Map<String,Object>> list = new ArrayList<>();
+        items.forEach(item->{
+            System.out.println(item);
+            Map<String,Object> map = JSON.parseObject(item);
+        });
+        System.out.println("一共有："+items.size()+"条数据");
 
 
 

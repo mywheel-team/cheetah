@@ -40,7 +40,6 @@ public class RedisHandler implements Handler {
 
         cheetahResult.getResults().forEach(result -> {
             redisHelper.add2Set(key, JSON.toJSONString(result));
-
         });
     }
 

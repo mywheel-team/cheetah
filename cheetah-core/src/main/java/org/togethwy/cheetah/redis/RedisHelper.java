@@ -39,8 +39,9 @@ public class RedisHelper {
     }
 
     public void add2Set(String key,List<String> list){
-        jedis.sadd(key,list.toArray(new String[0]));
-
+        if(list.size()>0){
+            jedis.sadd(key,list.toArray(new String[0]));
+        }
     }
 
     public static RedisHelper getInstance(String host, int port){

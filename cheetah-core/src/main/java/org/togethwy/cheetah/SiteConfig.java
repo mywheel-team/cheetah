@@ -2,6 +2,7 @@ package org.togethwy.cheetah;
 
 import org.togethwy.cheetah.downloader.Request;
 import org.togethwy.cheetah.downloader.RequestMethod;
+import org.togethwy.cheetah.redis.RedisHelper;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -74,6 +75,28 @@ public class SiteConfig {
      * 开启中断重启（从上次中断点重新爬）
      */
     private boolean openBreakRestart;
+
+    /**
+     * 断点配置redis域名
+     */
+    private String breakRedisHost;
+
+    /**
+     * 断点配置redis端口
+     */
+    private int breakRedisPort;
+
+
+    public String getBreakRedisHost() {
+        return breakRedisHost;
+    }
+
+
+
+    public int getBreakRedisPort() {
+        return breakRedisPort;
+    }
+
 
 
     public boolean isStartJSONAPI() {
@@ -182,6 +205,17 @@ public class SiteConfig {
 
     public SiteConfig openBreakRestart(boolean openBreakRestart) {
         this.openBreakRestart = openBreakRestart;
+        return this;
+    }
+
+    public void setBreakRedisConfig(String host,int port){
+        this.breakRedisHost = host;
+        this.breakRedisPort = port;
+
+    }
+    public SiteConfig setBreakRedisConfig(String host){
+        this.breakRedisHost = host;
+        this.breakRedisPort = RedisHelper.DEFAULT_REDIS_PORT;
         return this;
     }
 }

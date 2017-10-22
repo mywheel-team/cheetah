@@ -15,12 +15,8 @@ public class RedisPool {
 
     private static Lock poolLock = new ReentrantLock();
 
-    private static Lock jedisLocK = new ReentrantLock();
 
     private static int DEFAULT_POOL_MAX_REDIS_NUM = 100;
-
-    private static int DEFAULT_REDIS_PORT = 6379;
-
 
     private static JedisPool jedisPool;
 
@@ -29,7 +25,6 @@ public class RedisPool {
             try {
                 poolLock.lock();
                 JedisPoolConfig config = new JedisPoolConfig();
-//                config.setMaxWaitMillis();
                 config.setMaxTotal(DEFAULT_POOL_MAX_REDIS_NUM);
                 jedisPool = new JedisPool(config, host, port);
 

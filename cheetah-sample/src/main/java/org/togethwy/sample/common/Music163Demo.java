@@ -1,5 +1,6 @@
 package org.togethwy.sample.common;
 
+import com.alibaba.fastjson.JSONArray;
 import org.togethwy.cheetah.Cheetah;
 import org.togethwy.cheetah.CheetahResult;
 import org.togethwy.cheetah.SiteConfig;
@@ -57,7 +58,9 @@ public class Music163Demo implements PageProcessor {
 
             //下一页
             List<String> nextUrl = discover.getLinks("#m-pl-pager .u-page");
-            cheetahResult.addWaitRequest(nextUrl.get(nextUrl.size()-1));
+            if (nextUrl.size() > 1) {
+                cheetahResult.addWaitRequest(nextUrl.get(nextUrl.size() - 1));
+            }
 
             Html playInfo = page.getHtml().$("#song-list-pre-cache ul");
             List<String> songUrls = playInfo.getLinks();
@@ -70,7 +73,7 @@ public class Music163Demo implements PageProcessor {
     @Override
     public SiteConfig setAndGetSiteConfig() {
         this.siteConfig.setDomain("http://music.163.com")
-                .setStartUrl("http://music.163.com/discover/playlist/?cat=%E5%8D%8E%E8%AF%AD")
+                .setStartUrl("http://music.163.com/discover/playlist?cat=%E5%8D%8E%E8%AF%AD")
                 .setUserAgent("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_12_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.98 Safari/537.36")
                 .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
                 .addHeader("Accept-Encoding", "gzip, deflate, sdch, br")
@@ -78,7 +81,9 @@ public class Music163Demo implements PageProcessor {
                 .setThreadSleep(2000)
                 .setThreadNum(3)
                 .setJsonAPIUrl("http://music.163.com/weapi/v1/resource/comments/R_SO_4_5051245?csrf_token=")
-                .setStartJSONAPI(true);
+                .setStartJSONAPI(true)
+                .openBreakRestart(true)
+                .setBreakRedisConfig("127.0.0.1");
         return siteConfig;
     }
 
@@ -96,7 +101,8 @@ public class Music163Demo implements PageProcessor {
             MusicContent musicContent = new MusicContent(nickName, likeNum, content);
             lists.add(musicContent);
         });
-        cheetahResult.putField("hotComments", lists);
+        String comments = JSONArray.toJSONString(lists);
+        cheetahResult.putField("hotComments", comments);
         cheetahResult.putField("commentNum", commentNum);
     }
 
@@ -124,15 +130,14 @@ public class Music163Demo implements PageProcessor {
     public static void main(String[] args) {
         Cheetah.create(new Music163Demo())
                 .setHandler(new ConsoleHandler())
-                .setHandler(new ElasticHandler("127.0.0.1",9300,"wth-elastic","music","Netease"))
-                .setHandler(new RedisHandler("127.0.0.1","music163"))
+                .setHandler(new ElasticHandler("127.0.0.1", 9300, "wth-elastic", "music_test", "Netease"))
+                .setHandler(new RedisHandler("127.0.0.1", "music163_2"))
                 .run();
     }
 
+    public class MusicContent {
 
-    class MusicContent {
-
-        MusicContent(String nickName, int likeNum, String content) {
+        public MusicContent(String nickName, int likeNum, String content) {
             this.nickName = nickName;
             this.content = content;
             this.likeNum = likeNum;
@@ -152,5 +157,32 @@ public class Music163Demo implements PageProcessor {
             sb.append('}');
             return sb.toString();
         }
+
+        public String getNickName() {
+            return nickName;
+        }
+
+        public void setNickName(String nickName) {
+            this.nickName = nickName;
+        }
+
+        public int getLikeNum() {
+            return likeNum;
+        }
+
+        public void setLikeNum(int likeNum) {
+            this.likeNum = likeNum;
+        }
+
+        public String getContent() {
+            return content;
+        }
+
+        public void setContent(String content) {
+            this.content = content;
+        }
     }
+
+
+
 }

@@ -33,7 +33,7 @@ public class Cheetah implements Runnable {
 
     private SiteConfig siteConfig;
 
-    private volatile Queue<Request> waitRequests = new LinkedBlockingQueue<>();
+    private Queue<Request> waitRequests = new LinkedBlockingQueue<>();
 
     private Set<Integer> waitReqBackup = new HashSet<>();
 
@@ -78,7 +78,6 @@ public class Cheetah implements Runnable {
         prepareWaitUrl();
 
         while (!Thread.currentThread().isInterrupted()) {
-
             //从请求队列拿一条请求url
             Request request = waitRequests.poll();
             if (request == null) {
@@ -90,8 +89,9 @@ public class Cheetah implements Runnable {
             //判断是否开启断点重爬
             if (siteConfig.isBreakRestart()) {
                 redisCacheHelper.removeFromSet(redisWaitKey, request.getUrl()); //将待爬url从redis删除
-                redisCacheHelper.add2List(redisSaveKey, request.getUrl()); //记录爬取过的url
+                redisCacheHelper.add2Set(redisSaveKey, request.getUrl()); //记录爬取过的url
             }
+            //TODO 规范线程池关闭及等待时间条件
             threadPool.execute(() -> {
                 //页面抓取
                 Page page = (Page) downloader.download(request, siteConfig);
@@ -129,7 +129,7 @@ public class Cheetah implements Runnable {
             redisCacheHelper.getAllFromSet(redisWaitKey).forEach(waitUrl -> {
                 waitRequests.add(new Request(waitUrl));
             });
-            if(waitRequests.size()==0){
+            if (waitRequests.size() == 0) {
                 waitRequests.add(new Request(siteConfig.getStartUrl()));
             }
         } else {
@@ -160,8 +160,8 @@ public class Cheetah implements Runnable {
             });
             //开启断点重爬
             if (siteConfig.isBreakRestart()) {
-                redisCacheHelper.add2Set(redisWaitKey,waitUrlList); //将待爬url加入redis
-//                RedisHelper.getInstance("127.0.0.1",RedisHelper.DEFAULT_REDIS_PORT).add2Set(redisWaitKey, url);
+                RedisHelper.getInstance(siteConfig.getBreakRedisHost(),siteConfig.getBreakRedisPort())
+                        .add2Set(redisWaitKey, waitUrlList);
             }
         }
     }
