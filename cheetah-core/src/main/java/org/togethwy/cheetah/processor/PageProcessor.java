@@ -41,9 +41,22 @@ public interface PageProcessor {
 
     }
 
+    /**
+     * 更新JSON API的jsonUrl
+     * @param cheetahResult
+     * @param siteConfig
+     * @return
+     */
     default Request updateJSONConfig(CheetahResult cheetahResult,SiteConfig siteConfig){
         return null;
     }
+
+    /**
+     * 计划任务
+     */
+    default void plan(){ }
+
+
 
 
 
