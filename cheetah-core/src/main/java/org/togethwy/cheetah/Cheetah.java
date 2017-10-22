@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
 /**
@@ -35,7 +36,7 @@ public class Cheetah implements Runnable {
 
     private Queue<Request> waitRequests = new LinkedBlockingQueue<>();
 
-    private Set<Integer> waitReqBackup = new HashSet<>();
+    private Set<Integer> waitReqBackup =  ConcurrentHashMap.newKeySet();
 
     private RedisHelper redisCacheHelper = new RedisHelper("127.0.0.1");
 
@@ -81,8 +82,10 @@ public class Cheetah implements Runnable {
             //从请求队列拿一条请求url
             Request request = waitRequests.poll();
             if (request == null) {
-                if (threadPool.getAliveThreadNum() == 0) {
+                //若没有活跃线程且待爬列表为空，停止任务
+                if (threadPool.getAliveThreadNum() == 0 && waitRequests.size() == 0) {
                     threadPool.shutdown();
+                    break;
                 }
                 continue;
             }
@@ -91,7 +94,6 @@ public class Cheetah implements Runnable {
                 redisCacheHelper.removeFromSet(redisWaitKey, request.getUrl()); //将待爬url从redis删除
                 redisCacheHelper.add2Set(redisSaveKey, request.getUrl()); //记录爬取过的url
             }
-            //TODO 规范线程池关闭及等待时间条件
             threadPool.execute(() -> {
                 //页面抓取
                 Page page = (Page) downloader.download(request, siteConfig);
@@ -117,6 +119,7 @@ public class Cheetah implements Runnable {
                 }
             });
         }
+        logger.debug("爬取结束，共获取到{}条数据，",waitReqBackup.size());
     }
 
 
@@ -126,7 +129,8 @@ public class Cheetah implements Runnable {
     private void prepareWaitUrl() {
         if (siteConfig.isBreakRestart()) {
 
-            redisCacheHelper.getAllFromSet(redisWaitKey).forEach(waitUrl -> {
+            Set<String> waitUrls = redisCacheHelper.getAllFromSet(redisWaitKey);
+            waitUrls.forEach(waitUrl -> {
                 waitRequests.add(new Request(waitUrl));
             });
             if (waitRequests.size() == 0) {
@@ -160,7 +164,7 @@ public class Cheetah implements Runnable {
             });
             //开启断点重爬
             if (siteConfig.isBreakRestart()) {
-                RedisHelper.getInstance(siteConfig.getBreakRedisHost(),siteConfig.getBreakRedisPort())
+                RedisHelper.getInstance(siteConfig.getBreakRedisHost(), siteConfig.getBreakRedisPort())
                         .add2Set(redisWaitKey, waitUrlList);
             }
         }

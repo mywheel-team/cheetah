@@ -79,13 +79,4 @@ public class JsonDataResult extends DownloadResult {
     }
 
 
-    @Override
-    public void addWaitRequest(List<String> requests) {
-        for (String s : requests) {
-            if (StringUtils.isEmpty(s) || s.equals("#") || s.startsWith("javascript:")) {
-                break;
-            }
-            this.waitRequests.add(new Request(s));
-        }
-    }
 }

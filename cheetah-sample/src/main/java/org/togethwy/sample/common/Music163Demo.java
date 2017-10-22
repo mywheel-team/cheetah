@@ -101,8 +101,7 @@ public class Music163Demo implements PageProcessor {
             MusicContent musicContent = new MusicContent(nickName, likeNum, content);
             lists.add(musicContent);
         });
-        String comments = JSONArray.toJSONString(lists);
-        cheetahResult.putField("hotComments", comments);
+        cheetahResult.putField("hotComments", lists);
         cheetahResult.putField("commentNum", commentNum);
     }
 

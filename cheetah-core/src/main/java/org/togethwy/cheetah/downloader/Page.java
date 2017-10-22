@@ -27,7 +27,6 @@ public class Page extends DownloadResult {
         return this.html;
     }
 
-
     /**
      * 当前页面url
      */
@@ -40,20 +39,6 @@ public class Page extends DownloadResult {
     public void setUrl(String url) {
         this.url = url;
     }
-
-
-    @Override
-    public void addWaitRequest(List<String> requests) {
-        //TODO: synchronized  同步锁
-        for (String s : requests) {
-            if (StringUtils.isEmpty(s) || s.equals("#") || s.startsWith("javascript:")) {
-                break;
-            }
-            s = UrlUtils.canonicalizeUrl(s, getUrl());
-            this.waitRequests.add(new Request(s));
-        }
-    }
-
 
 
 }
