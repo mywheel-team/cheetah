@@ -114,8 +114,8 @@ public class DoubanMovieDemo implements PageProcessor {
     public static void main(String[] args) {
         Cheetah.create(new DoubanMovieDemo())
                 .setHandler(new ConsoleHandler())
-                .setHandler(new ElasticHandler("localhost", 9300, "wth-elastic", "cheetah_new", "movie"))
-                .setHandler(new RedisHandler("127.0.0.1", "douban_movie_4"))
+//                .setHandler(new ElasticHandler("localhost", 9300, "wth-elastic", "cheetah_new", "movie"))
+//                .setHandler(new RedisHandler("127.0.0.1", "douban_movie_4"))
                 .run();
     }
 }
