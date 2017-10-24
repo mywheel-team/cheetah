@@ -106,8 +106,11 @@ public class ZhihuDemo implements PageProcessor {
 
     public static void main(String[] args) {
 
-        Date date = new Date(System.currentTimeMillis()+2000);
-        new CheetahTimer().add(ZhihuDemo.class,date).plan();
+        Cheetah.create(new ZhihuDemo())
+                .setHandler(new ConsoleHandler())
+//                .setHandler(new ElasticHandler("127.0.0.1", 9300, "wth-elastic", "zhihu_new", "user_data"))
+//                .setHandler(new RedisHandler("127.0.0.1","zhihu_new"))
+                .run();
 
     }
 

@@ -5,7 +5,6 @@ import org.slf4j.LoggerFactory;
 import org.togethwy.cheetah.processor.PageProcessor;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
