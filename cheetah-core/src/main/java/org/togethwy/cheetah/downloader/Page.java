@@ -1,12 +1,6 @@
 package org.togethwy.cheetah.downloader;
 
-import org.togethwy.cheetah.selector.Html;
-import org.togethwy.cheetah.util.StringUtils;
-import org.togethwy.cheetah.util.UrlUtils;
-
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.List;
+import org.togethwy.cheetah.selector.CheetahNodes;
 
 /**
  * 下载的html页面格式的结果类
@@ -17,14 +11,14 @@ import java.util.List;
 public class Page extends DownloadResult {
 
 
-    private Html html;
+    private CheetahNodes html;
 
-    public Html getHtml() {
+    public CheetahNodes getHtml() {
         if (getRawText() == null) {
             return null;
         }
-        this.html = new Html(getRawText());
-        return this.html;
+        html = new CheetahNodes(getRawText());
+        return html;
     }
 
     /**

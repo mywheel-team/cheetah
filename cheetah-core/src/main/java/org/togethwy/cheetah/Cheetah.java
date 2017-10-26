@@ -38,7 +38,7 @@ public class Cheetah implements Runnable {
 
     private Set<Integer> waitReqBackup =  ConcurrentHashMap.newKeySet();
 
-    private RedisHelper redisCacheHelper = new RedisHelper("127.0.0.1");
+    private RedisHelper redisCacheHelper;
 
 
     private String redisWaitKey;
@@ -128,7 +128,7 @@ public class Cheetah implements Runnable {
      */
     private void prepareWaitUrl() {
         if (siteConfig.isBreakRestart()) {
-
+            redisCacheHelper =  new RedisHelper("127.0.0.1");
             Set<String> waitUrls = redisCacheHelper.getAllFromSet(redisWaitKey);
             waitUrls.forEach(waitUrl -> {
                 waitRequests.add(new Request(waitUrl));

@@ -30,7 +30,7 @@ public class ThreadPool {
     }
 
     public void execute(final Runnable runnable){
-        executorService.execute(()-> runnable.run());
+        executorService.execute(runnable::run);
     }
 
     public void shutdown(){

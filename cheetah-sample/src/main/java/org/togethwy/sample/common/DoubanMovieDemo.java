@@ -8,12 +8,12 @@ import org.togethwy.cheetah.downloader.Page;
 import org.togethwy.cheetah.downloader.Request;
 import org.togethwy.cheetah.downloader.RequestMethod;
 import org.togethwy.cheetah.handler.ConsoleHandler;
-import org.togethwy.cheetah.handler.RedisHandler;
 import org.togethwy.cheetah.processor.PageProcessor;
-import org.togethwy.cheetah.selector.Html;
-import org.togethwy.cheetah.handler.ElasticHandler;
+import org.togethwy.cheetah.selector.Selectable;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 豆瓣电影爬虫demo
@@ -33,7 +33,7 @@ public class DoubanMovieDemo implements PageProcessor {
             cheetahResult.setSkip(true);
             return;
         }
-        Html info = page.getHtml().$("#info");
+        Selectable info = page.getHtml().$("#info");
 
         String author = info.get(0).$("span .attrs a").getValue();
         List<String> actor_list = info.$("span.actor .attrs a").getAll();
@@ -79,9 +79,9 @@ public class DoubanMovieDemo implements PageProcessor {
                 .setThreadSleep(2000)
                 .setThreadNum(3)
                 .setJsonAPIUrl("https://movie.douban.com/j/new_search_subjects?sort=T&range=0,10&tags=&start=0")
-                .setStartJSONAPI(true)
-                .openBreakRestart(true) //开启断点重爬，从上次中断的位置开始爬
-                .setBreakRedisConfig("127.0.0.1");
+                .setStartJSONAPI(true);
+               // .openBreakRestart(true) //开启断点重爬，从上次中断的位置开始爬
+                //.setBreakRedisConfig("127.0.0.1");
         return siteConfig;
     }
 

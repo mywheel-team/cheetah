@@ -25,7 +25,7 @@ public class FreeImageDemo implements PageProcessor {
         List<String> nextUrls = page.getHtml().$("#content .homepage-tags").get(0).getLinks();
         cheetahResult.addWaitRequest(nextUrls);
 
-        List<String> fileUrls = page.getHtml().$("#content .listing-primary .listing-data ul").getImgUrls();
+        List<String> fileUrls = page.getHtml().$("#content .listing-primary .listing-data ul").getImageUrls();
         fileUrls.forEach(url->{
             cheetahResult.putFileResult(url.replace("small","large"));
         });

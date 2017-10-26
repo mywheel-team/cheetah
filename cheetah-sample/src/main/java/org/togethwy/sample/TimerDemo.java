@@ -1,7 +1,5 @@
 package org.togethwy.sample;
 
-import org.togethwy.cheetah.CheetahTimer;
-
 /**
  * @author wangtonghe
  * @date 2017/10/22 17:25

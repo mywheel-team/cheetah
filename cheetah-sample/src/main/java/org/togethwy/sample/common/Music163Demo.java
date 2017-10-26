@@ -1,6 +1,5 @@
 package org.togethwy.sample.common;
 
-import com.alibaba.fastjson.JSONArray;
 import org.togethwy.cheetah.Cheetah;
 import org.togethwy.cheetah.CheetahResult;
 import org.togethwy.cheetah.SiteConfig;
@@ -12,7 +11,7 @@ import org.togethwy.cheetah.handler.ConsoleHandler;
 import org.togethwy.cheetah.handler.ElasticHandler;
 import org.togethwy.cheetah.handler.RedisHandler;
 import org.togethwy.cheetah.processor.PageProcessor;
-import org.togethwy.cheetah.selector.Html;
+import org.togethwy.cheetah.selector.Selectable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,7 +32,7 @@ public class Music163Demo implements PageProcessor {
         String url = page.getUrl();
         int index = url.lastIndexOf("song?id=");
         if (index > -1) {
-            Html songInfo = page.getHtml().$(".m-lycifo .cnt");
+            Selectable songInfo = page.getHtml().$(".m-lycifo .cnt");
             String name = songInfo.$(".tit em").getValue();
             String singer = songInfo.$("p").get(0).$("span a").getValue();
             String album = songInfo.$("p").get(1).$("a").getValue();
@@ -46,7 +45,7 @@ public class Music163Demo implements PageProcessor {
             cheetahResult.putResult(result);
             cheetahResult.setStartJsonAPI(true);
         } else {
-            Html discover = page.getHtml().$("#m-disc-pl-c");
+            Selectable discover = page.getHtml().$("#m-disc-pl-c");
 
             //歌单类型
             List<String> typeUrls = discover.$("#cateListBox > .bd .f-cb").get(0).getLinks();
@@ -62,7 +61,7 @@ public class Music163Demo implements PageProcessor {
                 cheetahResult.addWaitRequest(nextUrl.get(nextUrl.size() - 1));
             }
 
-            Html playInfo = page.getHtml().$("#song-list-pre-cache ul");
+            Selectable playInfo = page.getHtml().$("#song-list-pre-cache ul");
             List<String> songUrls = playInfo.getLinks();
             cheetahResult.addWaitRequest(songUrls);
             cheetahResult.setSkip(true);

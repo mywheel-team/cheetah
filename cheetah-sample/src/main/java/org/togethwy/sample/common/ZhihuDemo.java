@@ -2,17 +2,15 @@ package org.togethwy.sample.common;
 
 import org.togethwy.cheetah.Cheetah;
 import org.togethwy.cheetah.CheetahResult;
-import org.togethwy.cheetah.CheetahTimer;
 import org.togethwy.cheetah.SiteConfig;
 import org.togethwy.cheetah.downloader.Page;
 import org.togethwy.cheetah.handler.ConsoleHandler;
 import org.togethwy.cheetah.handler.ElasticHandler;
 import org.togethwy.cheetah.handler.RedisHandler;
 import org.togethwy.cheetah.processor.PageProcessor;
-import org.togethwy.cheetah.selector.Html;
+import org.togethwy.cheetah.selector.Selectable;
 import org.togethwy.cheetah.util.StringUtils;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,9 +27,9 @@ public class ZhihuDemo implements PageProcessor {
     public void process(Page page, CheetahResult cheetahResult) {
 
 
-        Html main = page.getHtml().$(".Profile-mainColumn");
+        Selectable main = page.getHtml().$(".Profile-mainColumn");
 
-        Html listInfo = main.$(".ProfileMain-header ul li");
+        Selectable listInfo = main.$(".ProfileMain-header ul li");
 
         String name = page.getHtml().$(".ProfileHeader-title .ProfileHeader-name").getValue();
         if (StringUtils.isEmpty(name)) {
@@ -44,10 +42,10 @@ public class ZhihuDemo implements PageProcessor {
         result.put("quesNum", listInfo.get(2).$(".Tabs-meta").getValue());
         result.put("article", listInfo.get(3).$(".Tabs-meta").getValue());
 
-        Html sideInfo = page.getHtml().$(".Profile-main .Profile-sideColumn");
+        Selectable sideInfo = page.getHtml().$(".Profile-main .Profile-sideColumn");
 
 
-        Html follow = sideInfo.$(".FollowshipCard .FollowshipCard-counts a");
+        Selectable follow = sideInfo.$(".FollowshipCard .FollowshipCard-counts a");
 
         int followNum = Integer.parseInt(follow.get(0).$(".NumberBoard-value").getValue());
         int followerNum =  Integer.parseInt(follow.get(1).$(".NumberBoard-value").getValue());
