@@ -23,6 +23,9 @@ public class CheetahNode implements Selectable {
 
     @Override
     public Selectable $(String selector) {
+        if(element==null){
+            return null;
+        }
         return new CheetahNodes(element.select(selector));
     }
 
@@ -51,7 +54,7 @@ public class CheetahNode implements Selectable {
     }
 
     public String getValue() {
-        return element.text();
+        return element==null?"":element.text();
     }
 
     @Override

@@ -52,11 +52,11 @@ public class Music163Demo implements PageProcessor {
             cheetahResult.addWaitRequest(typeUrls);
 
             //歌单
-            List<String> playUrls = discover.getLinks("#m-pl-container li > div.u-cover");
+            List<String> playUrls = discover.$("#m-pl-container li > div.u-cover").getLinks();
             cheetahResult.addWaitRequest(playUrls);
 
             //下一页
-            List<String> nextUrl = discover.getLinks("#m-pl-pager .u-page");
+            List<String> nextUrl = discover.$("#m-pl-pager .u-page").getLinks();
             if (nextUrl.size() > 1) {
                 cheetahResult.addWaitRequest(nextUrl.get(nextUrl.size() - 1));
             }
@@ -80,9 +80,9 @@ public class Music163Demo implements PageProcessor {
                 .setThreadSleep(2000)
                 .setThreadNum(3)
                 .setJsonAPIUrl("http://music.163.com/weapi/v1/resource/comments/R_SO_4_5051245?csrf_token=")
-                .setStartJSONAPI(true)
-                .openBreakRestart(true)
-                .setBreakRedisConfig("127.0.0.1");
+                .setStartJSONAPI(true);
+//                .openBreakRestart(true)
+//                .setBreakRedisConfig("127.0.0.1");
         return siteConfig;
     }
 
@@ -128,8 +128,8 @@ public class Music163Demo implements PageProcessor {
     public static void main(String[] args) {
         Cheetah.create(new Music163Demo())
                 .setHandler(new ConsoleHandler())
-                .setHandler(new ElasticHandler("127.0.0.1", 9300, "wth-elastic", "music_test", "Netease"))
-                .setHandler(new RedisHandler("127.0.0.1", "music163_2"))
+//                .setHandler(new ElasticHandler("127.0.0.1", 9300, "wth-elastic", "music_test", "Netease"))
+//                .setHandler(new RedisHandler("127.0.0.1", "music163_2"))
                 .run();
     }
 

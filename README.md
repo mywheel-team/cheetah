@@ -172,6 +172,10 @@ public class ZhihuCrawler implements PageProcessor{
   即可自己指定时间，让爬虫在指定事件运行。具体示例可参考`TimerDemo`。
   
   
+## 关于文档
+
+文档详情见 [gitbook-cheetah](https://wangtonghe.gitbooks.io/cheetah/)
+
 ## 关于项目
 
 这是本人的一个业余项目。非常欢迎大家参与贡献代码或提Issues,一起讨论交流，邮件地址`wthfeng@126.com`。若是觉得不错，可以star以鼓励。大家共勉。
