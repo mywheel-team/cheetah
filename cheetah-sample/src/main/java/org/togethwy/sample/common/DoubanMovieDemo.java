@@ -8,6 +8,7 @@ import org.togethwy.cheetah.downloader.Page;
 import org.togethwy.cheetah.downloader.Request;
 import org.togethwy.cheetah.downloader.RequestMethod;
 import org.togethwy.cheetah.handler.ConsoleHandler;
+import org.togethwy.cheetah.handler.ElasticHandler;
 import org.togethwy.cheetah.processor.PageProcessor;
 import org.togethwy.cheetah.selector.Selectable;
 
@@ -88,7 +89,6 @@ public class DoubanMovieDemo implements PageProcessor {
 
     @Override
     public void processJSON(JsonDataResult jsonData, CheetahResult cheetahResult) {
-
         List<Map<String, Object>> listData = jsonData.parseListFromMap();
 
         listData.forEach(eachMap -> {
@@ -96,8 +96,6 @@ public class DoubanMovieDemo implements PageProcessor {
             cheetahResult.addWaitRequest(url);
 
         });
-
-
     }
 
     @Override
@@ -108,6 +106,14 @@ public class DoubanMovieDemo implements PageProcessor {
         String newUrl = url.replace(numStr, "start=" + (num + 10));
         siteConfig.setJsonAPIUrl(newUrl);
         return new Request(newUrl, null, RequestMethod.GET);
+    }
+
+    @Override
+    public void plan() {
+        Cheetah.create(new DoubanMovieDemo())
+                .setHandler(new ConsoleHandler())
+                .setHandler(new ElasticHandler("localhost", 9300, "wth-elastic", "cheetah_new", "movie"))
+                .run();
     }
 
 

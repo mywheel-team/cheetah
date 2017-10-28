@@ -10,8 +10,10 @@
     <artifactId>cheetah-datastore</artifactId>
     <packaging>jar</packaging>
 
-    <name>cheetah-datastore</name>
-    <url>http://maven.apache.org</url>
+    <name>${project.groupId}:${project.artifactId}</name>
+    <url>https://github.com/togethwy/cheetah</url>
+    <description>Positioning for the use of simple, focusing on data analysis java crawler framework</description>
+
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

@@ -13,11 +13,27 @@
     <packaging>pom</packaging>
 
     <name>cheetah</name>
-    <url>http://maven.apache.org</url>
+    <url>https://github.com/togethwy/cheetah</url>
+    <description>Positioning for the use of simple, focusing on data analysis java crawler framework</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <name>Tonghe Wang</name>
+            <email>wthfeng@126.com</email>
+            <organization>togethwy</organization>
+            <organizationUrl>https://github.com/togethwy</organizationUrl>
+        </developer>
+    </developers>
 
     <dependencies>
         <dependency>

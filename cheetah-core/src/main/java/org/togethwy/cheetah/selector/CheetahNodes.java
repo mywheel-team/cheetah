@@ -88,7 +88,7 @@ public class CheetahNodes implements Selectable {
         if (elements == null || elements.size() == 0) {
             return null;
         }
-        return new CheetahNode(elements.get(0));
+        return new CheetahNode(elements.get(index));
     }
 
     @Override

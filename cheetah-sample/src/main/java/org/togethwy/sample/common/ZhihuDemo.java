@@ -70,7 +70,6 @@ public class ZhihuDemo implements PageProcessor {
             }
         }
 
-
         links.forEach(link -> {
             String newLink = link + "/followers";
             cheetahResult.addWaitRequest(newLink);
@@ -86,9 +85,9 @@ public class ZhihuDemo implements PageProcessor {
                 .addHeader("Accept-Encoding", "gzip, deflate, sdch, br")
                 .addHeader("Accept-Language", "zh-CN, zh; q=0.8, en; q=0.6")
                 .setThreadSleep(2000)
-                .setThreadNum(3)
-                .openBreakRestart(true)
-                .setBreakRedisConfig("127.0.0.1");
+                .setThreadNum(3);
+//                .openBreakRestart(true)
+//                .setBreakRedisConfig("127.0.0.1");
         return siteConfig;
     }
 
@@ -103,13 +102,10 @@ public class ZhihuDemo implements PageProcessor {
 
 
     public static void main(String[] args) {
-
         Cheetah.create(new ZhihuDemo())
                 .setHandler(new ConsoleHandler())
 //                .setHandler(new ElasticHandler("127.0.0.1", 9300, "wth-elastic", "zhihu_new", "user_data"))
-//                .setHandler(new RedisHandler("127.0.0.1","zhihu_new"))
                 .run();
-
     }
 
 }
