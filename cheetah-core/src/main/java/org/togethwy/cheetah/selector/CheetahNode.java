@@ -39,7 +39,7 @@ public class CheetahNode implements Selectable {
         Elements elements = element.select(type);
         return elements.stream()
                 .filter(ele -> ele.hasAttr(attr))
-                .map(Element::text)
+                .map(ele->ele.attr(attr))
                 .filter(text -> StringUtils.isEmpty(regex) || !StringUtils.isEmpty(regex) && text.matches(regex))
                 .collect(Collectors.toList());
 

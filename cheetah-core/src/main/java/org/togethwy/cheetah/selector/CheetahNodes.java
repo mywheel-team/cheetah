@@ -76,7 +76,7 @@ public class CheetahNodes implements Selectable {
         elements = elements.select(type);
         return elements.stream()
                 .filter(ele -> ele.hasAttr(attr))
-                .map(Element::text)
+                .map(ele->ele.attr(attr))
                 .filter(text -> StringUtils.isEmpty(regex) || !StringUtils.isEmpty(regex) && text.matches(regex))
                 .collect(Collectors.toList());
 
