@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 
 /**
  * 元素节点集合
+ * TODO 频繁创建对象导致的性能开销
  *
  * @author wangtonghe
  * @date 2017/10/26 16:08
@@ -36,7 +37,7 @@ public class CheetahNodes implements Selectable {
         if (elements != null) {
             return new CheetahNodes(elements.select(selectorText));
         }
-        return null;
+        return new CheetahNodes();
     }
 
 
@@ -86,7 +87,7 @@ public class CheetahNodes implements Selectable {
     @Override
     public Selectable get(int index) {
         if (elements == null || elements.size() == 0) {
-            return null;
+            return new CheetahNode();
         }
         return new CheetahNode(elements.get(index));
     }

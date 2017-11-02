@@ -18,4 +18,28 @@ public class ThreadTest {
         });
 
     }
+
+    @Test
+    public void test2(){
+
+
+            ExceptionThread runnable = new ExceptionThread();
+            Thread d =new  Thread(runnable);
+            d.setUncaughtExceptionHandler((t,e)->{
+                System.out.println("handle exception");
+            });
+            d.start();
+
+
+    }
+
+
+}
+
+class ExceptionThread implements Runnable{
+
+    @Override
+    public void run() {
+        throw new RuntimeException();
+    }
 }

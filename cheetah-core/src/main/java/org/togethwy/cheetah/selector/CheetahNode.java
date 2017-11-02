@@ -4,6 +4,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.togethwy.cheetah.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,10 +22,12 @@ public class CheetahNode implements Selectable {
         this.element = element;
     }
 
+    public CheetahNode(){}
+
     @Override
     public Selectable $(String selector) {
         if(element==null){
-            return null;
+            return new CheetahNodes();
         }
         return new CheetahNodes(element.select(selector));
     }
@@ -37,7 +40,7 @@ public class CheetahNode implements Selectable {
 
     public List<String> getUrls(String type, String attr, String regex) {
         if (element == null) {
-            return null;
+            return new ArrayList<>();
         }
         Elements elements = element.select(type);
         return elements.stream()
@@ -70,7 +73,7 @@ public class CheetahNode implements Selectable {
     @Override
     public Selectable get(int index) {
         if (element == null || element.children() == null) {
-            return null;
+            return new CheetahNode();
         }
         return new CheetahNode(element.child(0));
     }
@@ -78,7 +81,7 @@ public class CheetahNode implements Selectable {
     @Override
     public List<String> getAll() {
         if (element == null || element.children() == null) {
-            return null;
+            return new ArrayList<>();
         }
         return element.children().stream().map(Element::text).collect(Collectors.toList());
     }
@@ -86,7 +89,7 @@ public class CheetahNode implements Selectable {
     @Override
     public String nextNodeText() {
         if (element == null) {
-            return null;
+            return "";
         }
         return element.nextSibling().toString();
     }
@@ -94,7 +97,7 @@ public class CheetahNode implements Selectable {
     @Override
     public String prevNodeText() {
         if (element == null) {
-            return null;
+            return "";
         }
         return element.previousSibling().toString();
     }
