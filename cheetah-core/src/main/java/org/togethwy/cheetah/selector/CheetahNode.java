@@ -102,5 +102,12 @@ public class CheetahNode implements Selectable {
         return element.previousSibling().toString();
     }
 
+    public String attr(String attr){
+        if(element==null){
+            return "";
+        }
+        return element.attr(attr);
+    }
+
 
 }

@@ -1,16 +1,18 @@
 package org.togethwy.cheetah;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.togethwy.cheetah.downloader.*;
 import org.togethwy.cheetah.handler.ConsoleHandler;
 import org.togethwy.cheetah.handler.Handler;
 import org.togethwy.cheetah.processor.PageProcessor;
 import org.togethwy.cheetah.redis.RedisHelper;
-import org.togethwy.cheetah.redis.RedisPool;
 import org.togethwy.cheetah.threadpool.ThreadPool;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -78,7 +80,7 @@ public class Cheetah implements Runnable {
         ThreadPool threadPool = new ThreadPool(siteConfig.getThreadNum());
         prepareWaitUrl();
 
-        while (!Thread.currentThread().isInterrupted()) {
+        while (!Thread.currentThread().isInterrupted()) {  //响应中断
             //从请求队列拿一条请求url
             Request request = waitRequests.poll();
             if (request == null) {
@@ -86,6 +88,11 @@ public class Cheetah implements Runnable {
                 if (threadPool.getAliveThreadNum() == 0 && waitRequests.size() == 0) {
                     threadPool.shutdown();
                     break;
+                }
+                try {
+                    Thread.sleep(siteConfig.getThreadSleep());
+                } catch (InterruptedException e) {
+                    logger.error("cheetah sleep", e);
                 }
                 continue;
             }

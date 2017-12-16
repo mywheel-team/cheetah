@@ -19,8 +19,21 @@ public class RegexTest {
         Pattern pattern = Pattern.compile(patStr);
         Matcher matcher = pattern.matcher(line);
         System.out.println(matcher.lookingAt());
+    }
 
+    @Test
+    public void test2() {
+        String url = "http://www.ygdy8.net/html/gndy/dyzz/index.html2";
+        boolean is = url.matches(".*/html/gndy.*\\.html$");
+        System.out.println(is);
+    }
 
+    @Test
+    public void test3() {
+        String url = "list_7_2.html";
+        boolean is = url.matches("^list.*\\.html$");
+        System.out.println(is);
 
     }
+
 }

@@ -1,8 +1,6 @@
 package org.togethwy.cheetah.threadpool;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -10,6 +8,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @date 2017/7/8 19:39
  */
 public class ThreadPool {
+
+    private final int DEFAULT_KEEP_ALIVE_TIME = 5000;
+
     /**
      * 线程数
      */
@@ -22,7 +23,13 @@ public class ThreadPool {
 
     public ThreadPool(int threadNum) {
         this.threadNum = threadNum;
-        this.executorService = Executors.newFixedThreadPool(threadNum);
+        this.executorService =new ThreadPoolExecutor(threadNum,threadNum,DEFAULT_KEEP_ALIVE_TIME, TimeUnit.MILLISECONDS,new LinkedTransferQueue<>());
+    }
+
+    public ThreadPool(int threadNum,int aliveTime) {
+        this.threadNum = threadNum;
+        this.executorService =new ThreadPoolExecutor(threadNum,threadNum,aliveTime, TimeUnit.MILLISECONDS,new LinkedTransferQueue<>());
+
     }
 
     public ThreadPool(ExecutorService executorService) {
@@ -30,7 +37,7 @@ public class ThreadPool {
     }
 
     public void execute(final Runnable runnable){
-        executorService.execute(runnable::run);
+        executorService.execute(runnable);
     }
 
     public void shutdown(){
