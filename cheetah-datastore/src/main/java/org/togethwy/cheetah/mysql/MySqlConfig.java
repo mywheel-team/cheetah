@@ -24,7 +24,7 @@ public final class MySqlConfig {
     private String tableName;
 
 
-    public MySqlConfig(String host, String port, String user, String password, String database,String tableName) {
+    public MySqlConfig(String host, String port, String user, String password, String database, String tableName) {
         this.host = host;
         this.port = port;
         this.user = user;

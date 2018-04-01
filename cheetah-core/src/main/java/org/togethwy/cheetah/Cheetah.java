@@ -38,7 +38,7 @@ public class Cheetah implements Runnable {
 
     private Queue<Request> waitRequests = new LinkedBlockingQueue<>();
 
-    private Set<Integer> waitReqBackup =  ConcurrentHashMap.newKeySet();
+    private Set<Integer> waitReqBackup = ConcurrentHashMap.newKeySet();
 
     private RedisHelper redisCacheHelper;
 
@@ -48,9 +48,9 @@ public class Cheetah implements Runnable {
     private String redisSaveKey;
 
 
-    private final static String wait_prefix = "wait_url_key_";
+    private final static String WAIT_PREFIX = "wait_url_key_";
 
-    private final static String save_prefix = "save_url_key_";
+    private final static String SAVE_PREFIX = "save_url_key_";
 
 
     private Cheetah(PageProcessor pageProcessor) {
@@ -58,8 +58,8 @@ public class Cheetah implements Runnable {
         this.siteConfig = pageProcessor.setAndGetSiteConfig();
 
         String destClassName = pageProcessor.getClass().getSimpleName().toLowerCase();
-        this.redisSaveKey = save_prefix + destClassName;
-        this.redisWaitKey = wait_prefix + destClassName;
+        this.redisSaveKey = SAVE_PREFIX + destClassName;
+        this.redisWaitKey = WAIT_PREFIX + destClassName;
 
     }
 
@@ -76,11 +76,13 @@ public class Cheetah implements Runnable {
     /**
      * 爬虫起始方法
      */
+    @Override
     public void run() {
         ThreadPool threadPool = new ThreadPool(siteConfig.getThreadNum());
         prepareWaitUrl();
 
-        while (!Thread.currentThread().isInterrupted()) {  //响应中断
+        //响应中断
+        while (!Thread.currentThread().isInterrupted()) {
             //从请求队列拿一条请求url
             Request request = waitRequests.poll();
             if (request == null) {
@@ -96,17 +98,13 @@ public class Cheetah implements Runnable {
                 }
                 continue;
             }
-            //判断是否开启断点重爬
-            if (siteConfig.isBreakRestart()) {
-                redisCacheHelper.removeFromSet(redisWaitKey, request.getUrl()); //将待爬url从redis删除
-                redisCacheHelper.add2Set(redisSaveKey, request.getUrl()); //记录爬取过的url
-            }
             threadPool.execute(() -> {
                 //页面抓取
                 Page page = (Page) downloader.download(request, siteConfig);
                 CheetahResult cheetahResult = new CheetahResult(page.getUrl());
                 if (page.getStatusCode() == Constant.STATUS_CODE_200) {
-                    pageProcessor.process(page, cheetahResult);  //处理页面
+                    //处理页面
+                    pageProcessor.process(page, cheetahResult);
                 }
 
                 //jsonAPI方式
@@ -117,7 +115,15 @@ public class Cheetah implements Runnable {
                 }
                 handleWaitRequest(cheetahResult);
                 if (!cheetahResult.isSkip()) {
-                    handleResult(cheetahResult); //处理结果
+                    //处理结果
+                    handleResult(cheetahResult);
+                }
+                //判断是否开启断点重爬
+                if (siteConfig.isBreakRestart()) {
+                    //将待爬url从redis删除
+                    redisCacheHelper.removeFromSet(redisWaitKey, request.getUrl());
+                    //记录爬取过的url
+                    redisCacheHelper.add2Set(redisSaveKey, request.getUrl());
                 }
                 try {
                     Thread.sleep(siteConfig.getThreadSleep());
@@ -126,7 +132,7 @@ public class Cheetah implements Runnable {
                 }
             });
         }
-        logger.debug("爬取结束，共获取到{}条数据，",waitReqBackup.size());
+        logger.debug("爬取结束，共获取到{}条数据，", waitReqBackup.size());
     }
 
 
@@ -135,7 +141,7 @@ public class Cheetah implements Runnable {
      */
     private void prepareWaitUrl() {
         if (siteConfig.isBreakRestart()) {
-            redisCacheHelper =  new RedisHelper("127.0.0.1");
+            redisCacheHelper = new RedisHelper("127.0.0.1");
             Set<String> waitUrls = redisCacheHelper.getAllFromSet(redisWaitKey);
             waitUrls.forEach(waitUrl -> {
                 waitRequests.add(new Request(waitUrl));

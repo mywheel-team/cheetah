@@ -9,10 +9,14 @@ import org.togethwy.cheetah.downloader.Request;
 import org.togethwy.cheetah.downloader.RequestMethod;
 import org.togethwy.cheetah.handler.ConsoleHandler;
 import org.togethwy.cheetah.handler.ElasticHandler;
+import org.togethwy.cheetah.handler.MysqlHandler;
 import org.togethwy.cheetah.handler.RedisHandler;
+import org.togethwy.cheetah.mysql.MySqlConfig;
+import org.togethwy.cheetah.mysql.MySqlDAO;
 import org.togethwy.cheetah.processor.PageProcessor;
 import org.togethwy.cheetah.selector.Selectable;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,15 +37,20 @@ public class Music163Demo implements PageProcessor {
         int index = url.lastIndexOf("song?id=");
         if (index > -1) {
             Selectable songInfo = page.getHtml().$(".m-lycifo .cnt");
+            String cover = page.getHtml().$(".m-lycifo .cvrwrap .u-cover").getImageUrls().get(0);
             String name = songInfo.$(".tit em").getValue();
             String singer = songInfo.$("p").get(0).$("span a").getValue();
             String album = songInfo.$("p").get(1).$("a").getValue();
             String musicId = url.substring(index + 8).trim();
             Map<String, Object> result = new HashMap<>();
             result.put("name", name);
-            result.put("id", musicId);
+            result.put("music_id", musicId);
             result.put("singer", singer);
             result.put("album", album);
+            result.put("cover", cover);
+            result.put("origin", "网易云");
+            result.put("link", url);
+            result.put("create_date", LocalDate.now());
             cheetahResult.putResult(result);
             cheetahResult.setStartJsonAPI(true);
         } else {
@@ -80,9 +89,9 @@ public class Music163Demo implements PageProcessor {
                 .setThreadSleep(2000)
                 .setThreadNum(3)
                 .setJsonAPIUrl("http://music.163.com/weapi/v1/resource/comments/R_SO_4_5051245?csrf_token=")
-                .setStartJSONAPI(true);
-//                .openBreakRestart(true)
-//                .setBreakRedisConfig("127.0.0.1");
+                .setStartJSONAPI(true)
+                .openBreakRestart(true)
+                .setBreakRedisConfig("127.0.0.1");
         return siteConfig;
     }
 
@@ -114,7 +123,7 @@ public class Music163Demo implements PageProcessor {
         String newUrl = "";
         if (music != null) {
             String oldStr = url.substring(url.lastIndexOf("R_SO_4_") + 7, url.lastIndexOf("?"));
-            String newStr = (String) music.get("id");
+            String newStr = (String) music.get("music_id");
             newUrl = url.replace(oldStr, newStr);
         }
         Map<String, String> paramMap = new HashMap<>();
@@ -126,10 +135,12 @@ public class Music163Demo implements PageProcessor {
     }
 
     public static void main(String[] args) {
+
+        MySqlConfig mySqlConfig = new MySqlConfig("localhost", "3306", "hf_website", "1234!@#$", "hf_website", "music");
         Cheetah.create(new Music163Demo())
                 .setHandler(new ConsoleHandler())
-                .setHandler(new ElasticHandler("127.0.0.1", 9300, "wth-elastic", "music_test2", "Netease"))
-//                .setHandler(new RedisHandler("127.0.0.1", "music163_2"))
+                .setHandler(new ElasticHandler("127.0.0.1",9300,"wth-elastic","hf_website","music"))
+                .setHandler(new MysqlHandler(mySqlConfig))
                 .run();
     }
 
@@ -180,7 +191,6 @@ public class Music163Demo implements PageProcessor {
             this.content = content;
         }
     }
-
 
 
 }

@@ -56,6 +56,7 @@ public class CheetahNode implements Selectable {
         return getLinks(null);
     }
 
+    @Override
     public String getValue() {
         return element==null?"":element.text();
     }
